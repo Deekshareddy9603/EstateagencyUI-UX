@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stackly - Real Estate Agency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Our Firm - Aura Estates</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-900 bg-white selection:bg-slate-900 selection:text-white">
+    <body class="bg-[#fcfbf9] m-0 p-0 overflow-x-hidden">
+
+<!-- Navbar Container (Fixed at top so it never scrolls away on both desktop & mobile) -->
+<header class="w-full bg-white border-b border-gray-100/80 fixed top-0 inset-x-0 z-50 shadow-sm">
+    <div class="max-w-[1460px] mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+        <!-- Logo Slot (Single big logo instance) -->
+        <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="location.href='./index.html'">
+            <div class="h-10 sm:h-12 flex items-center">
+                 <a href="./index.html">
+                <img src="./main logo.webp" alt="Stackly Logo" class="h-9 sm:h-11 w-auto object-contain hidden" id="custom-logo-img" onload="this.classList.remove('hidden'); document.getElementById('fallback-logo').classList.add('hidden');"></a>
+                <!-- Fallback Logo shown until image path is set/loaded -->
+                <div id="fallback-logo" class="flex items-center space-x-2">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#081628] flex items-center justify-center text-white font-bold shadow-sm">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <span class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">STACKLY</span>
+                </div>
+            </div>
+        </div>
+ <!-- Navigation Links (Desktop) -->
+        <nav class="hidden lg:flex items-center space-x-8 text-[15px] font-medium text-slate-600">
+            <a href="./index.html" class="hover:text-slate-900 transition-colors">Home</a>
+            <a href="./properties.html" class="hover:text-slate-900 transition-colors">Properties</a>
+            <a href="./buy.html" class="hover:text-slate-900 transition-colors">Buy</a>
+            <a href="./rent.html" class="hover:text-slate-900 transition-colors">Rent</a>
+            <a href="./sell.html" class="hover:text-slate-900 transition-colors">Sell</a>
+            <!-- Active About Us State Applied Below -->
+            <a href="./about.html" class="text-slate-900 font-semibold transition-colors">About Us</a>
+            <a href="./contact.html" class="hover:text-slate-900 transition-colors">Contact</a>
+        </nav>
+
+        <!-- Right Actions (Desktop) -->
+        <div class="hidden lg:flex items-center space-x-6 shrink-0">
+            <a href="login.html" class="text-[15px] font-medium text-slate-700 hover:text-slate-900 transition-colors">
+                Login
+            </a>
+            <a href="./postproperty.html" class="bg-[#081628] hover:bg-[#0c2340] text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg shadow-sm transition-all transform active:scale-95 inline-block">
+                + Post Property
+            </a>
+        </div>
+
+        <!-- Single Mobile Toggle Slot (Same position for 3-lines / Close button, zero overlap) -->
+        <div class="flex items-center lg:hidden shrink-0">
+            <button onclick="toggleMobileMenu()" id="mobile-menu-btn" aria-label="Toggle menu" class="text-slate-800 p-2 rounded-lg focus:outline-none hover:bg-slate-100 transition-colors">
+                <svg id="menu-icon-open" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <svg id="menu-icon-close" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Full Screen Mobile Drawer / Overlay (Clean layout, zero label noise, zero overflow) -->
+    <div id="mobile-menu" class="fixed inset-x-0 top-20 bottom-0 bg-white z-50 hidden flex-col justify-between overflow-y-auto lg:hidden">
+        <!-- Navigation Links List -->
+        <div class="px-6 py-6">
+            <nav class="flex flex-col space-y-1 text-lg font-semibold text-slate-800">
+                <a href="./index.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Home</a>
+                <a href="./properties.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Properties</a>
+                <a href="./buy.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Buy</a>
+                <a href="./rent.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Rent</a>
+                <a href="./sell.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Sell</a>
+                 <a href="./about.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-900 border-b border-gray-100">About Us</a>
+                <a href="./contact.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Contact</a>
+            </nav>
+        </div>
+
+        <!-- Bottom Action Buttons inside Drawer -->
+        <div class="p-6 border-t border-gray-100 bg-slate-50 flex flex-col space-y-3">
+            <a href="login.html" class="w-full text-center bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 text-[15px] font-semibold py-3 rounded-xl shadow-sm transition-all block">
+                Login
+            </a>
+            <a href="./postproperty.html" class="w-full text-center bg-[#081628] hover:bg-[#0c2340] text-white text-[15px] font-semibold py-3.5 rounded-xl shadow-md transition-all block">
+                + Post Property
+            </a>
+        </div>
+    </div>
+</header>
+
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const openIcon = document.getElementById('menu-icon-open');
+        const closeIcon = document.getElementById('menu-icon-close');
+        const isHidden = menu.classList.contains('hidden');
+
+        if (isHidden) {
+            menu.classList.remove('hidden');
+            menu.classList.add('flex');
+            openIcon.classList.add('hidden');
+            closeIcon.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } else {
+            menu.classList.add('hidden');
+            menu.classList.remove('flex');
+            openIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+</script>
+
+
+
+    <!-- FULL-SCREEN WIDTH ABOUT HERO SECTION -->
+    <section class="w-full min-h-[650px] lg:min-h-[750px] relative flex flex-col justify-start pt-12 sm:pt-16 lg:pt-20 px-6 sm:px-12 lg:px-20 overflow-hidden">
+        
+        <!-- Background Image (Replace with your image URL or path) -->
+        <img src="./abt1.webp" alt="About Our Firm Background" class="absolute inset-0 w-full h-full object-cover">
+        
+        <!-- Dark Gradient Overlay for Readability -->
+        <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/20"></div>
+
+        <!-- Content Container (Shifted closer to the top) -->
+        <div class="relative z-10 max-w-[1440px] mx-auto w-full">
+            
+            <!-- Top Badge -->
+            <br>
+            <br>
+            <br><div class="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md border border-white/20 px-3.5 py-1.5 rounded-full mb-5">
+                <span class="w-2 h-2 rounded-full bg-[#b8975a]"></span>
+                <span class="text-[10px] font-bold tracking-widest text-white uppercase">ABOUT OUR FIRM</span>
+            </div>
+
+            <!-- Main Headline -->
+            <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] mb-5">
+                Building Trust. <br>
+                Creating Homes. <br>
+                <span class="text-[#b8975a] italic font-serif font-normal">Shaping Futures.</span>
+            </h1>
+
+            <!-- Subtitle Description -->
+            <p class="text-xs sm:text-sm text-slate-200 leading-relaxed mb-8 max-w-xl">
+                Your trusted real estate partner for buying, selling, renting, and investing in exceptional properties across global capital markets.
+            </p>
+
+            <!-- Action Button & Floating Badge Row -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                
+                <!-- Primary Button (Gold) -->
+                <a href="./404.html" class="bg-[#b8975a] hover:bg-[#a6854e] text-white text-xs font-bold tracking-wider px-8 py-4 rounded-xl transition shadow-md flex items-center space-x-2">
+                    <span>Explore Our Story</span>
+                    <span>&rarr;</span>
+                </a>
+
+                <!-- Floating Stat Badge -->
+                <div class="bg-black/40 backdrop-blur-md border border-white/20 text-white text-xs font-semibold px-5 py-3.5 rounded-xl flex items-center space-x-2">
+                    <span class="text-[#b8975a]">&#10003;</span>
+                    <span>Over $1.2B Curated Transactions</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+    <!-- ABOUT OUR REAL ESTATE AGENCY SECTION IN BOX -->
+<section class="w-full bg-[#fcfbf9] py-16 lg:py-24 px-4 sm:px-6 lg:px-12">
+    <div class="max-w-[1440px] mx-auto">
+        
+        <!-- Main Box Container (Gold border removed) -->
+        <div class="bg-[#f7f9fb] rounded-3xl p-8 sm:p-12 lg:p-16 shadow-sm">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                
+                <!-- Left Column: Image with Floating Provenance Card -->
+                <div class="lg:col-span-6 relative">
+                    
+                    <!-- Main Image Container -->
+                    <div class="rounded-3xl overflow-hidden shadow-sm border border-[#b8975a] bg-white relative">
+                        <img src="./abt2.webp" alt="About Our Real Estate Agency" class="w-full h-[450px] sm:h-[520px] object-cover">
+                    </div>
+
+                    <!-- Floating Card overlapping bottom right -->
+                    <div class="absolute -bottom-8 -right-4 sm:right-6 bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-[#e5dec9] max-w-[280px] sm:max-w-[310px]">
+                        <div class="flex items-center space-x-2 text-[#b8975a] mb-2">
+                            <!-- Image Icon Slot for Provenance Card -->
+                            <img src="./abt3.webp" alt="Icon" class="w-5 h-5 object-contain">
+                            <span class="text-xs font-extrabold tracking-widest uppercase">10+ Years PROVENANCE</span>
+                        </div>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Uncompromising standards across prime residential acquisitions and sovereign estates.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Right Column: Text Content & Features -->
+                <div class="lg:col-span-6 lg:pl-4">
+                    
+                    <!-- Section Subtitle -->
+                    <p class="text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-3 flex items-center space-x-2">
+                        <span class="w-6 h-[1px] bg-[#b8975a] inline-block"></span>
+                        <span>DISTINGUISHED HERITAGE</span>
+                    </p>
+
+                    <!-- Main Heading -->
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight mb-6 font-serif">
+                        About Our Real Estate Agency
+                    </h2>
+
+                    <!-- Paragraph 1 -->
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-6">
+                        We are a dedicated real estate agency committed to making property decisions simple, transparent, and rewarding. Our experienced team connects buyers, sellers, renters, and investors with the right opportunities.
+                    </p>
+
+                    <!-- Paragraph 2 -->
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed mb-8">
+                        Founded on principles of architectural reverence and institutional discretion, Aurelia &amp; Co. merges proprietary private-market intelligence with bespoke advisory services. We orchestrate acquisitions that transcend simple transactions, preserving client legacy and financial sovereignty at every stage.
+                    </p>
+
+                    <!-- Two Column Checkmark Features with Image Icons -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-slate-200 mb-8">
+                        
+                        <!-- Feature 1 -->
+                        <div>
+                            <div class="flex items-center space-x-2 text-slate-900 font-bold text-xs mb-1">
+                                <!-- Image Icon Slot 1 -->
+                                <img src="./abt4.webp" alt="Icon" class="w-4 h-4 object-contain">
+                                <span>Discreet Advisory</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 leading-relaxed pl-6">
+                                Confidential off-market transaction structures.
+                            </p>
+                        </div>
+
+                        <!-- Feature 2 -->
+                        <div>
+                            <div class="flex items-center space-x-2 text-slate-900 font-bold text-xs mb-1">
+                                <!-- Image Icon Slot 2 -->
+                                <img src="./abt4.webp" alt="Icon" class="w-4 h-4 object-contain">
+                                <span>Global Placement</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 leading-relaxed pl-6">
+                                Access across New York, London, Paris &amp; Tokyo.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <!-- Action Button -->
+                    <div>
+                        <a href="./404.html" class="inline-flex items-center space-x-2 bg-[#0a1118] hover:bg-[#15222e] text-white text-xs font-bold tracking-wider px-8 py-4 rounded-xl transition shadow-md border border-[#b8975a]">
+                            <span>EXPLORE OUR PROPERTIES</span>
+                            <span>&rarr;</span>
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- GUIDING PHILOSOPHY / OUR MISSION SECTION -->
+<section class="w-full bg-[#fcfbf9] py-16 lg:py-24 px-4 sm:px-6 lg:px-12">
+    <div class="max-w-[1440px] mx-auto">
+        
+        <!-- Mission Card Container with #f7f9fb background -->
+        <div class="max-w-4xl mx-auto bg-[#f7f9fb] rounded-3xl p-8 sm:p-12 lg:p-16 shadow-sm border border-slate-200/60 text-center relative">
+            
+            <!-- Top Image Icon Slot inside a soft pill/box -->
+            <div class="w-12 h-12 mx-auto mb-6 bg-white border border-[#e5dec9] rounded-2xl flex items-center justify-center shadow-sm">
+                <img src="./abt15.webp" alt="Icon" class="w-6 h-6 object-contain">
+            </div>
+
+            <!-- Subtitle -->
+            <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-3">
+                GUIDING PHILOSOPHY
+            </p>
+
+            <!-- Main Heading -->
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-8 font-serif">
+                Our Mission
+            </h2>
+
+            <!-- Italicized Quote -->
+            <blockquote class="text-base sm:text-xl lg:text-2xl italic font-serif text-slate-700 leading-relaxed max-w-2xl mx-auto mb-10">
+                &ldquo;Helping people find the right property while delivering honest advice, exceptional service, and a seamless real estate experience.&rdquo;
+            </blockquote>
+
+            <!-- Bottom Divider -->
+            <div class="w-full h-[1px] bg-slate-200 mb-8"></div>
+
+            <!-- Footer Details Row (Founder & Verified Ethos) -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12">
+                
+                <!-- Founder Info -->
+                <div class="text-center sm:text-left">
+                    <h4 class="text-xs font-bold text-slate-900 tracking-wide">Alexander Wright</h4>
+                    <p class="text-[10px] tracking-wider text-slate-400 uppercase mt-0.5">FOUNDER &amp; MANAGING DIRECTOR</p>
+                </div>
+
+                <!-- Vertical Divider (hidden on mobile) -->
+                <div class="hidden sm:block w-[1px] h-8 bg-slate-300"></div>
+
+                <!-- Verified Ethos Badge with Image Icon Slot -->
+                <div class="flex items-center space-x-2">
+                    <img src="./abt16.webp" alt="Verified Icon" class="w-4 h-4 object-contain">
+                    <span class="text-[10px] font-bold tracking-widest text-[#b8975a] uppercase">VERIFIED ETHOS</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- WHY CHOOSE US SECTION WITH OUTER CONTAINER BOX -->
+<section class="w-full bg-[#fcfbf9] py-16 lg:py-24 px-4 sm:px-6 lg:px-12">
+    <div class="max-w-[1440px] mx-auto">
+        
+        <!-- Outer Box Container with #f7f9fb background -->
+        <div class="bg-[#f7f9fb] rounded-3xl p-8 sm:p-12 lg:p-16 shadow-sm border border-slate-200/60">
+            
+            <!-- Section Header -->
+            <div class="text-center max-w-xl mx-auto mb-16">
+                <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-3">
+                    DISTINGUISHED REPRESENTATION
+                </p>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 font-serif">
+                    Why Choose Us
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    Unrivaled institutional governance applied to private residential acquisitions and portfolio strategies.
+                </p>
+            </div>
+
+            <!-- 4 Cards Grid (Inside White Cards) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Card 1 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Icon Slot -->
+                        <div class="w-12 h-12 bg-[#fcfbf9] border border-[#e5dec9] rounded-2xl flex items-center justify-center shadow-sm mb-6">
+                            <img src="./abt17.webp" alt="Icon" class="w-6 h-6 object-contain">
+                        </div>
+                        <!-- Title -->
+                        <h3 class="text-base font-extrabold text-slate-900 mb-3">Trusted Expertise</h3>
+                        <!-- Description -->
+                        <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                            Experienced professionals with strong market knowledge and deep neighborhood insights across tier-one enclaves.
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-[#b8975a] uppercase hover:text-[#9e7f4c] transition">
+                            <span>UNIFIED ADVISORY</span>
+                            <span class="ml-1">&gt;</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Icon Slot -->
+                        <div class="w-12 h-12 bg-[#fcfbf9] border border-[#e5dec9] rounded-2xl flex items-center justify-center shadow-sm mb-6">
+                            <img src="./abt18.webp" alt="Icon" class="w-6 h-6 object-contain">
+                        </div>
+                        <!-- Title -->
+                        <h3 class="text-base font-extrabold text-slate-900 mb-3">Verified Properties</h3>
+                        <!-- Description -->
+                        <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                            Carefully selected and verified listings vetted through rigorous title, architectural, and structural provenance audits.
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-[#b8975a] uppercase hover:text-[#9e7f4c] transition">
+                            <span>LEGAL PROVENANCE</span>
+                            <span class="ml-1">&gt;</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Icon Slot -->
+                        <div class="w-12 h-12 bg-[#fcfbf9] border border-[#e5dec9] rounded-2xl flex items-center justify-center shadow-sm mb-6">
+                            <img src="./abt19.webp" alt="Icon" class="w-6 h-6 object-contain">
+                        </div>
+                        <!-- Title -->
+                        <h3 class="text-base font-extrabold text-slate-900 mb-3">Personalized Service</h3>
+                        <!-- Description -->
+                        <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                            Solutions designed around every client’s needs, discreet and tailored precisely to your lifestyle and wealth preservation targets.
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-[#b8975a] uppercase hover:text-[#9e7f4c] transition">
+                            <span>WHITE-GLOVE CONCIERGE</span>
+                            <span class="ml-1">&gt;</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Icon Slot -->
+                        <div class="w-12 h-12 bg-[#fcfbf9] border border-[#e5dec9] rounded-2xl flex items-center justify-center shadow-sm mb-6">
+                            <img src="./abt10.webp" alt="Icon" class="w-6 h-6 object-contain">
+                        </div>
+                        <!-- Title -->
+                        <h3 class="text-base font-extrabold text-slate-900 mb-3">Transparent Process</h3>
+                        <!-- Description -->
+                        <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                            Clear, uncompromising communication from start to finish with no hidden surprises, unaligned incentives, or opaque valuations.
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-[#b8975a] uppercase hover:text-[#9e7f4c] transition">
+                            <span>FIDUCIARY INTEGRITY</span>
+                            <span class="ml-1">&gt;</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- OUR COMPREHENSIVE SERVICES SECTION -->
+<section class="w-full bg-[#fcfbf9] py-16 lg:py-24 px-4 sm:px-6 lg:px-12">
+    <div class="max-w-[1440px] mx-auto">
+        
+        <!-- Outer Box Container with #f7f9fb background -->
+        <div class="bg-[#f7f9fb] rounded-3xl p-8 sm:p-12 lg:p-16 shadow-sm border border-slate-200/60">
+            
+            <!-- Section Header (2-column layout matching reference) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end mb-16">
+                <div class="lg:col-span-8">
+                    <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-3">
+                        CAPABILITIES
+                    </p>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight font-serif">
+                        Our Comprehensive Services
+                    </h2>
+                </div>
+                <div class="lg:col-span-4">
+                    <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                        End-to-end advisory executing high-stakes real estate operations with surgical precision and discreet stewardship.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 6 Cards Grid (3 columns x 2 rows inside White Cards) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Card 1: Buy Property -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Icon Slot -->
+                        <div class="w-12 h-12 bg-[#fcfbf9] border border-[#e5dec9] rounded-2xl flex items-center justify-center shadow-sm mb-6">
+                            <img src="./abt11.webp" alt="Icon" class="w-6 h-6 object-contain">
+                        </div>
+                        <h3 class="text-base font-extrabold text-slate-900 mb-3">Buy Property</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                            Curated access to premier private listings, historic architectural residences, and confidential off-market estates.
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-slate-900 hover:text-[#b8975a] transition">
+                            <span>DISCOVER ACQUISITIONS</span>
+                            <span class="ml-1 font-extrabold">&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2: Sell Property -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Icon Slot -->
+                        <div class="w-12 h-12 bg-[#fcfbf9] border border-[#e5dec9] rounded-2xl flex items-center justify-center shadow-sm mb-6">
+                            <img src="./abt12.webp" alt="Icon" class="w-6 h-6 object-contain">
+                        </div>
+                        <h3 class="text-base font-extrabold text-slate-900 mb-3">Sell Property</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                            Strategic global positioning, high-impact monograph marketing, and bespoke buyer syndication driving record-setting valuations.
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-slate-900 hover:text-[#b8975a] transition">
+                            <span>DISCUSS DISPOSAL</span>
+                            <span class="ml-1 font-extrabold">&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3: Rent Property -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Icon Slot -->
+                        <div class="w-12 h-12 bg-[#fcfbf9] border border-[#e5dec9] rounded-2xl flex items-center justify-center shadow-sm mb-6">
+                            <img src="./abt13.webp" alt="Icon" class="w-6 h-6 object-contain">
+                        </div>
+                        <h3 class="text-base font-extrabold text-slate-900 mb-3">Rent Property</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                            Exclusive luxury leasing portfolios for diplomatic, executive, short-term relocation, and permanent sanctuary stays.
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-slate-900 hover:text-[#b8975a] transition">
+                            <span>EXPLORE RESIDENCES</span>
+                            <span class="ml-1 font-extrabold">&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 4: Property Valuation -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Icon Slot -->
+                        <div class="w-12 h-12 bg-[#fcfbf9] border border-[#e5dec9] rounded-2xl flex items-center justify-center shadow-sm mb-6">
+                            <img src="./abt14.webp" alt="Icon" class="w-6 h-6 object-contain">
+                        </div>
+                        <h3 class="text-base font-extrabold text-slate-900 mb-3">Property Valuation</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                            In-depth quantitative market appraisals backed by proprietary sales data, architectural index models, and real-time yield analysis.
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-slate-900 hover:text-[#b8975a] transition">
+                            <span>REQUEST APPRAISAL</span>
+                            <span class="ml-1 font-extrabold">&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 5: Real Estate Investment -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Icon Slot -->
+                        <div class="w-12 h-12 bg-[#fcfbf9] border border-[#e5dec9] rounded-2xl flex items-center justify-center shadow-sm mb-6">
+                            <img src="./abt15.webp" alt="Icon" class="w-6 h-6 object-contain">
+                        </div>
+                        <h3 class="text-base font-extrabold text-slate-900 mb-3">Real Estate Investment</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                            Portfolio optimization, prime yield acquisitions, cross-border capital syndication, and sovereign wealth allocation frameworks.
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-slate-900 hover:text-[#b8975a] transition">
+                            <span>INVESTMENT SYNDICATE</span>
+                            <span class="ml-1 font-extrabold">&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 6: Property Management -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Icon Slot -->
+                        <div class="w-12 h-12 bg-[#fcfbf9] border border-[#e5dec9] rounded-2xl flex items-center justify-center shadow-sm mb-6">
+                            <img src="./abt16.webp" alt="Icon" class="w-6 h-6 object-contain">
+                        </div>
+                        <h3 class="text-base font-extrabold text-slate-900 mb-3">Property Management</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                            Comprehensive asset preservation, private staff vetting, physical plant maintenance, and continuous high-net-worth tenant stewardship.
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-slate-900 hover:text-[#b8975a] transition">
+                            <span>ASSET PRESERVATION</span>
+                            <span class="ml-1 font-extrabold">&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- INSTITUTIONAL TRACK RECORD FULL WIDTH SECTION -->
+<section class="w-full bg-[#38578a] py-20 lg:py-28 px-4 sm:px-6 lg:px-12 overflow-hidden">
+    <div class="max-w-[1440px] mx-auto text-center">
+        
+        <!-- Subtitle -->
+        <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-3">
+            INSTITUTIONAL TRACK RECORD
+        </p>
+
+        <!-- Main Heading -->
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-20 font-serif">
+            Measured In Long-Term Excellence
+        </h2>
+
+        <!-- 4 Statistics Columns with Vertical Dividers -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-0 items-center">
+            
+            <!-- Stat 1 -->
+            <div class="flex flex-col items-center px-4 relative">
+                <h3 class="text-4xl sm:text-5xl font-extrabold text-[#b8975a] mb-2 font-serif">10+</h3>
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-2">Years Experience</h4>
+                <p class="text-[11px] text-slate-200 max-w-[220px] leading-relaxed">
+                    Steering transactions through diverse global financial cycles.
+                </p>
+                <!-- Right Divider (Visible on Large screens only) -->
+                <div class="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[1px] h-24 bg-white/20"></div>
+            </div>
+
+            <!-- Stat 2 -->
+            <div class="flex flex-col items-center px-4 relative">
+                <h3 class="text-4xl sm:text-5xl font-extrabold text-[#b8975a] mb-2 font-serif">500+</h3>
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-2">Properties Curated</h4>
+                <p class="text-[11px] text-slate-200 max-w-[220px] leading-relaxed">
+                    Vetted architectural jewels and master-planned penthouses.
+                </p>
+                <!-- Right Divider (Visible on Large screens only) -->
+                <div class="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[1px] h-24 bg-white/20"></div>
+            </div>
+
+            <!-- Stat 3 -->
+            <div class="flex flex-col items-center px-4 relative">
+                <h3 class="text-4xl sm:text-5xl font-extrabold text-[#b8975a] mb-2 font-serif">1,000+</h3>
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-2">Happy Clients</h4>
+                <p class="text-[11px] text-slate-200 max-w-[220px] leading-relaxed">
+                    Sovereigns, family offices, and discerning individuals.
+                </p>
+                <!-- Right Divider (Visible on Large screens only) -->
+                <div class="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 w-[1px] h-24 bg-white/20"></div>
+            </div>
+
+            <!-- Stat 4 -->
+            <div class="flex flex-col items-center px-4">
+                <h3 class="text-4xl sm:text-5xl font-extrabold text-[#b8975a] mb-2 font-serif">50+</h3>
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-2">Global Locations</h4>
+                <p class="text-[11px] text-slate-200 max-w-[220px] leading-relaxed">
+                    Prime coastal, metropolitan, and alpine markets worldwide.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- MEET OUR EXPERTS SECTION -->
+<section class="w-full bg-[#fcfbf9] py-16 lg:py-24 px-4 sm:px-6 lg:px-12">
+    <div class="max-w-[1440px] mx-auto">
+        
+        <!-- Outer Box Container with #f7f9fb background -->
+        <div class="bg-[#f7f9fb] rounded-3xl p-8 sm:p-12 lg:p-16 shadow-sm border border-slate-200/60">
+            
+            <!-- Section Header -->
+            <div class="text-center max-w-xl mx-auto mb-16">
+                <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-3">
+                    EXECUTIVE LEADERSHIP
+                </p>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 font-serif">
+                    Meet Our Experts
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    A multidisciplinary assembly of licensed advocates, architects, and capital market strategists.
+                </p>
+            </div>
+
+            <!-- 4 Expert Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Expert 1 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Flush to Top & Side Borders -->
+                        <div class="w-full h-[280px] bg-slate-100">
+                            <img src="./david_miller.webp" alt="Alexander Wright" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Text Content with Padding -->
+                        <div class="p-6 pb-2">
+                            <h3 class="text-base font-extrabold text-slate-900 mb-1">Alexander Wright</h3>
+                            <p class="text-[10px] tracking-wider text-[#b8975a] font-bold uppercase mb-4">MANAGING DIRECTOR &amp; FOUNDER</p>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-6">
+                                15+ years orchestrating prime luxury acquisitions and ultra-high-net-worth real estate syndicates.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6">
+                        <hr class="border-slate-100 mb-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">DISCREET OFFICE</span>
+                            <!-- Image Icon Slots -->
+                            <div class="flex items-center space-x-2">
+                                <a href="./404.html" class="w-6 h-6 flex items-center justify-center"><img src="./abt19.webp" alt="icon" class="w-4 h-4 object-contain"></a>
+                                <a href="./404.html" class="w-6 h-6 flex items-center justify-center"><img src="./abt18.webp" alt="icon" class="w-4 h-4 object-contain"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expert 2 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Flush to Top & Side Borders -->
+                        <div class="w-full h-[280px] bg-slate-100">
+                            <img src="./elena_rodriguez.webp" alt="Elena Rostova" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Text Content with Padding -->
+                        <div class="p-6 pb-2">
+                            <h3 class="text-base font-extrabold text-slate-900 mb-1">Elena Rostova</h3>
+                            <p class="text-[10px] tracking-wider text-[#b8975a] font-bold uppercase mb-4">HEAD OF ARCHITECTURE &amp; ADVISORY</p>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-6">
+                                Specialist in landmark penthouses, heritage architectural restorations, and bespoke spatial audits.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6">
+                        <hr class="border-slate-100 mb-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">ARCHITECTURAL ADVISORY</span>
+                            <!-- Image Icon Slots -->
+                            <div class="flex items-center space-x-2">
+                                <a href="./404.html" class="w-6 h-6 flex items-center justify-center"><img src="./abt19.webp" alt="icon" class="w-4 h-4 object-contain"></a>
+                                <a href="./404.html" class="w-6 h-6 flex items-center justify-center"><img src="./abt18.webp" alt="icon" class="w-4 h-4 object-contain"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expert 3 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Flush to Top & Side Borders -->
+                        <div class="w-full h-[280px] bg-slate-100">
+                            <img src="./marcus_thorne.webp" alt="Marcus Sterling" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Text Content with Padding -->
+                        <div class="p-6 pb-2">
+                            <h3 class="text-base font-extrabold text-slate-900 mb-1">Marcus Sterling</h3>
+                            <p class="text-[10px] tracking-wider text-[#b8975a] font-bold uppercase mb-4">DIRECTOR OF CLIENT INVESTMENTS</p>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-6">
+                                Institutional portfolio management focusing on cross-border yields, tax-efficient structures, and syndications.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6">
+                        <hr class="border-slate-100 mb-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">CAPITAL MARKETS</span>
+                            <!-- Image Icon Slots -->
+                            <div class="flex items-center space-x-2">
+                                <a href="./404.html" class="w-6 h-6 flex items-center justify-center"><img src="./abt19.webp" alt="icon" class="w-4 h-4 object-contain"></a>
+                                <a href="./404.html" class="w-6 h-6 flex items-center justify-center"><img src="./abt18.webp" alt="icon" class="w-4 h-4 object-contain"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expert 4 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- Image Flush to Top & Side Borders -->
+                        <div class="w-full h-[280px] bg-slate-100">
+                            <img src="./elena_rodriguez_new.webp" alt="Sophia Chen" class="w-full h-full object-cover">
+                        </div>
+                        <!-- Text Content with Padding -->
+                        <div class="p-6 pb-2">
+                            <h3 class="text-base font-extrabold text-slate-900 mb-1">Sophia Chen</h3>
+                            <p class="text-[10px] tracking-wider text-[#b8975a] font-bold uppercase mb-4">SENIOR PARTNER</p>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-6">
+                                Authority on prime coastal estates, private island holdings, and waterfront masterwork sanctuaries.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6">
+                        <hr class="border-slate-100 mb-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">COASTAL DIVISION</span>
+                            <!-- Image Icon Slots -->
+                            <div class="flex items-center space-x-2">
+                                <a href="./404.html" class="w-6 h-6 flex items-center justify-center"><img src="./abt19.webp" alt="icon" class="w-4 h-4 object-contain"></a>
+                                <a href="./404.html" class="w-6 h-6 flex items-center justify-center"><img src="./abt18.webp" alt="icon" class="w-4 h-4 object-contain"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- WHAT OUR CLIENTS SAY TESTIMONIALS SECTION -->
+<section class="w-full bg-[#fcfbf9] py-16 lg:py-24 px-4 sm:px-6 lg:px-12">
+    <div class="max-w-[1440px] mx-auto">
+        
+        <!-- Outer Box Container with #f7f9fb background -->
+        <div class="bg-[#f7f9fb] rounded-3xl p-8 sm:p-12 lg:p-16 shadow-sm border border-slate-200/60">
+            
+            <!-- Section Header -->
+            <div class="text-center max-w-xl mx-auto mb-16">
+                <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-3">
+                    CLIENT PROVENANCE
+                </p>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 font-serif">
+                    What Our Clients Say
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    Unfiltered impressions from sovereign families, architects, and international investors.
+                </p>
+            </div>
+
+            <!-- 3 Testimonial Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Testimonial 1 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- 5-Star Rating Image Slot -->
+                        <div class="mb-6">
+                            <img src="./abt20.webp" alt="5 Stars" class="h-4 object-contain">
+                        </div>
+                        <!-- Testimonial Quote -->
+                        <p class="text-xs sm:text-sm text-slate-700 italic leading-relaxed mb-8 font-serif">
+                            &ldquo;Aurelia &amp; Co. navigated the confidential acquisition of our historic Tribeca loft with staggering discretion and absolute precision. They simply have access to doors no one else can unlock.&rdquo;
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <!-- Client Profile Info -->
+                        <div class="flex items-center space-x-3">
+                            <div class="w-9 h-9 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                                <img src="./abt21.webp" alt="Arthur &amp; Evelyn Vance" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900">Arthur &amp; Evelyn Vance</h4>
+                                <p class="text-[9px] font-bold text-slate-400 tracking-widest uppercase">TRIBECA, NEW YORK</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- 5-Star Rating Image Slot -->
+                        <div class="mb-6">
+                            <img src="./abt20.webp" alt="5 Stars" class="h-4 object-contain">
+                        </div>
+                        <!-- Testimonial Quote -->
+                        <p class="text-xs sm:text-sm text-slate-700 italic leading-relaxed mb-8 font-serif">
+                            &ldquo;When disposing of our Bel Air estate, Alexander and his advisory team achieved a record valuation without a single public listing. Their white-glove execution set a benchmark for integrity.&rdquo;
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <!-- Client Profile Info -->
+                        <div class="flex items-center space-x-3">
+                            <div class="w-9 h-9 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                                <img src="./abt22.webp" alt="Julian Moretti" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900">Julian Moretti</h4>
+                                <p class="text-[9px] font-bold text-slate-400 tracking-widest uppercase">BEL AIR, LOS ANGELES</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col justify-between transition hover:shadow-md">
+                    <div>
+                        <!-- 5-Star Rating Image Slot -->
+                        <div class="mb-6">
+                            <img src="./abt20.webp" alt="5 Stars" class="h-4 object-contain">
+                        </div>
+                        <!-- Testimonial Quote -->
+                        <p class="text-xs sm:text-sm text-slate-700 italic leading-relaxed mb-8 font-serif">
+                            &ldquo;Elena Rostova&rsquo;s architectural review saved us from an unforeseen preservation pitfall in Kensington. Their counsel is far beyond brokerage—it is high-level asset stewardship.&rdquo;
+                        </p>
+                    </div>
+                    <div>
+                        <hr class="border-slate-100 mb-4">
+                        <!-- Client Profile Info -->
+                        <div class="flex items-center space-x-3">
+                            <div class="w-9 h-9 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                                <img src="./abt23.webp" alt="Camilla Dupont" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900">Camilla Dupont</h4>
+                                <p class="text-[9px] font-bold text-slate-400 tracking-widest uppercase">KENSINGTON, LONDON</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+
+
+<footer class="footer-section" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #0b0f19; color: #94a3b8; width: 100%; box-sizing: border-box; margin: 24px 0 0 0; padding: 64px 48px;">
+  <div style="width: 100%; max-width: 1344px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr; gap: 40px; align-items: start;" class="footer-grid">
+    
+    <!-- Column 1: Home icon image first, Custom logo second + Bio -->
+    <div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; min-height: 46px;">
+        <!-- White Rounded Box with Home Icon Image (First) - Made Slightly Larger -->
+        <a href="./index.html" aria-label="Home" style="width: 46px; height: 46px; border-radius: 14px; background-color: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none; box-sizing: border-box; flex-shrink: 0;">
+          <img src="./footericon.webp" alt="Home Icon" style="width: 24px; height: 24px; object-fit: contain; display: block;" />
+        </a>
+
+        <!-- Replace src with your logo image path (Second) -->
+        <a href="./index.html" style="display: inline-block;">
+          <img src="./footer logo.webp" alt="Company Logo" style="height: 32px; width: auto; object-fit: contain; display: block;" />
+        </a>
+      </div>
+      <p style="font-size: 14px; color: #94a3b8; line-height: 1.6; margin: 0 0 24px 0; max-width: 280px;">
+        Your trusted partner in real estate. We help you find the perfect property for a better tomorrow.
+      </p>
+      
+     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <!-- Facebook -->
+        <a href="404.html" aria-label="Facebook" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#1877F2'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <!-- Twitter / X -->
+        <a href="404.html" aria-label="Twitter" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#000000'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <!-- Instagram -->
+        <a href="404.html" aria-label="Instagram" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#E4405F'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+        </a>
+        <!-- LinkedIn -->
+        <a href="404.html" aria-label="LinkedIn" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#0A66C2'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <!-- YouTube -->
+        <a href="404.html" aria-label="YouTube" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Column 2: Quick Links -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Quick Links</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="./index.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Home</a></li>
+        <li><a href="./about.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">About Us</a></li>
+        <li><a href="./contact.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Contact</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Privacy Policy</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Terms &amp; Conditions</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 3: Properties -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Properties</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Buy Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Rent Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Sell Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Featured Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">All Properties</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 4: Company -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Company</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Our Team</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Careers</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Blog</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">FAQs</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Testimonials</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 5: Newsletter -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 12px 0;">Newsletter</h3>
+      <p style="font-size: 13.5px; color: #94a3b8; line-height: 1.5; margin: 0 0 16px 0;">
+        Subscribe to get the latest property updates.
+      </p>
+      
+      <form id="stackly-newsletter-form" onsubmit="handleNewsletterSubmit(event)" style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <input 
+          type="email" 
+          id="newsletter-email" 
+          placeholder="Enter your email" 
+          style="flex: 1; min-width: 140px; background-color: #ffffff; color: #0f172a; border: none; border-radius: 8px; padding: 10px 14px; font-size: 13.5px; outline: none; box-sizing: border-box;"
+        />
+        <button 
+          type="submit" 
+          aria-label="Subscribe"
+          style="background-color: #2563eb; color: #ffffff; border: none; border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.2s, transform 0.1s; flex-shrink: 0;"
+          onmouseover="this.style.backgroundColor='#1d4ed8'"
+          onmouseout="this.style.backgroundColor='#2563eb'"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+      <div id="newsletter-error" style="color: #ef4444; font-size: 12px; margin-top: 6px; display: none;">Please enter the email first</div>
+    </div>
+
+  </div>
+
+  <style>
+    @media (max-width: 1024px) {
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+    @media (max-width: 640px) {
+      .footer-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .footer-section {
+        padding: 48px 20px !important;
+      }
+    }
+  </style>
+
+  <script>
+    function handleNewsletterSubmit(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('newsletter-email');
+      const errorMsg = document.getElementById('newsletter-error');
+      const emailVal = emailInput.value.trim();
+
+      if (!emailVal || !emailVal.includes('@')) {
+        errorMsg.style.display = 'block';
+        emailInput.style.border = '1px solid #ef4444';
+        return;
+      }
+      
+      errorMsg.style.display = 'none';
+      emailInput.style.border = 'none';
+      window.location.href = '404.html';
+    }
+  </script>
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const openIcon = document.getElementById('menu-icon-open');
+        const closeIcon = document.getElementById('menu-icon-close');
+        
+        if (!menu || !openIcon || !closeIcon) return;
+
+        const isHidden = menu.classList.contains('hidden');
+
+        if (isHidden) {
+            menu.classList.remove('hidden');
+            menu.classList.add('flex');
+            openIcon.classList.add('hidden');
+            closeIcon.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } else {
+            menu.classList.add('hidden');
+            menu.classList.remove('flex');
+            openIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+</script>
+
+</body>
+</html>

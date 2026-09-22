@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin & Broker Dashboard - Aura Estates</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#F8F9FA] min-h-screen font-sans text-slate-800 flex flex-col md:flex-row">
+
+    <!-- MOBILE TOP BAR HEADER -->
+    <header class="md:hidden bg-white border-b border-slate-200 h-16 px-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <div class="flex items-center space-x-3">
+            <button onclick="toggleMobileMenu()" class="text-slate-700 hover:text-amber-600 focus:outline-none p-1">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+               <a href="./index.html"> <div class="bg-white px-2 py-1 rounded shadow-sm border border-slate-100 flex items-center">
+            
+                <img src="./abt33.webp" alt="Logo" class="h-6 object-contain" onerror="this.src='https://via.placeholder.com/100x30?text=Aura'"></a>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <span class="text-[11px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded">ADMIN</span>
+            <div class="w-8 h-8 rounded-full bg-amber-600 text-white font-bold flex items-center justify-center text-xs" id="mobileTopbarInitials">A</div>
+        </div>
+    </header>
+
+    <!-- MOBILE SIDEBAR OVERLAY -->
+    <div id="mobileSidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity" onclick="toggleMobileMenu()"></div>
+
+    <!-- ADMIN SIDEBAR (DESKTOP & MOBILE SLIDE-OUT) -->
+    <aside id="adminSidebar" class="w-72 bg-slate-950 text-slate-300 fixed inset-y-0 left-0 z-50 transform -translate-x-full md:translate-x-0 md:static transition-transform duration-300 ease-in-out flex flex-col justify-between border-r border-slate-800 shadow-xl">
+        <div>
+            <!-- Logo & White Background Box -->
+            <div class="p-5 border-b border-slate-800 flex items-center justify-between bg-white">
+                <img src="./main logo.webp" alt="Logo" class="h-8 object-contain" onerror="this.src='https://via.placeholder.com/120x35?text=Aura+Estates'">
+                <span class="bg-amber-500/20 text-amber-600 text-[10px] font-extrabold px-2 py-0.5 rounded border border-amber-500/30">ADMIN</span>
+            </div>
+
+            <!-- Left Side Sections Navigation -->
+            <nav class="p-4 space-y-1.5 text-xs font-medium">
+                <button onclick="switchSection('overview')" id="nav-overview" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-amber-500/10 text-amber-400 font-semibold transition shadow-sm border border-amber-500/20">
+                    <i class="fa-solid fa-chart-pie w-5 text-amber-400"></i> <span>1. Dashboard Overview</span>
+                </button>
+                <button onclick="switchSection('clients')" id="nav-clients" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-users w-5 text-slate-400"></i> <span>2. Client Management</span>
+                </button>
+                <button onclick="switchSection('escrows')" id="nav-escrows" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-landmark w-5 text-slate-400"></i> <span>3. Listings &amp; Escrows</span>
+                </button>
+                <button onclick="switchSection('approvals')" id="nav-approvals" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-shield-halved w-5 text-slate-400"></i> <span>4. Reserve Approvals</span>
+                </button>
+                <button onclick="switchSection('ledger')" id="nav-ledger" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-vault w-5 text-slate-400"></i> <span>5. Global Escrow Ledger</span>
+                </button>
+                <button onclick="switchSection('audits')" id="nav-audits" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-file-invoice-dollar w-5 text-slate-400"></i> <span>6. Appraisal Audits</span>
+                </button>
+                <button onclick="switchSection('security')" id="nav-security" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-sliders w-5 text-slate-400"></i> <span>7. System Security</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- Admin Profile Footer Box -->
+        <div class="p-4 border-t border-slate-800 bg-black/30 text-xs">
+            <p class="text-amber-400 font-semibold uppercase tracking-wider text-[10px]">Verified Administrator</p>
+            <p id="adminUserName" class="text-white font-bold truncate mt-0.5">Admin</p>
+            <p id="adminUserEmail" class="text-slate-400 truncate text-[11px]">email@gmail.com</p>
+            <button onclick="logout()" class="mt-3 w-full border border-slate-700 hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-400 text-slate-300 py-2 rounded-lg text-center transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+            </button>
+        </div>
+    </aside>
+
+    <!-- ADMIN MAIN CONTENT WRAPPER -->
+    <main class="flex-1 flex flex-col min-h-screen overflow-x-hidden">
+        <!-- Desktop Header -->
+        <header class="hidden md:flex bg-white border-b border-slate-200 h-20 px-6 lg:px-10 items-center justify-between sticky top-0 z-20 shadow-sm">
+            <div class="flex items-center space-x-4">
+                <div class="bg-white p-1.5 rounded-lg shadow-sm border border-slate-100">
+                    <img src="./abt33.png" alt="Logo" class="h-7 object-contain" onerror="this.src='https://via.placeholder.com/110x30?text=Aura'">
+                </div>
+                <h1 class="text-base sm:text-lg font-extrabold text-slate-900" id="headerTitle"> Admin Control Center</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="topbarAdminEmail" class="text-xs font-semibold text-slate-600 bg-slate-100 px-3.5 py-2 rounded-full border border-slate-200"></span>
+                <div class="w-9 h-9 rounded-full bg-amber-600 text-white font-bold flex items-center justify-center text-xs shadow-sm" id="topbarAdminInitials">A</div>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Injection Area -->
+        <div class="p-4 sm:p-6 lg:p-10 space-y-6 max-w-[1400px] w-full mx-auto" id="dynamicContentContainer"></div>
+    </main>
+
+    <script>
+        // Retrieve exact email from localStorage
+        const adminEmail = localStorage.getItem('userEmail') || 'admin@auraestates.com';
+        const rawAdminPart = adminEmail.split('@')[0];
+        const extractedAdminName = rawAdminPart.charAt(0).toUpperCase() + rawAdminPart.slice(1);
+        const adminInitials = extractedAdminName.charAt(0).toUpperCase();
+
+        document.getElementById('adminUserName').textContent = extractedAdminName;
+        document.getElementById('adminUserEmail').textContent = adminEmail;
+        document.getElementById('topbarAdminEmail').textContent = adminEmail;
+        document.getElementById('topbarAdminInitials').textContent = adminInitials;
+        document.getElementById('mobileTopbarInitials').textContent = adminInitials;
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        function redirectTo404() {
+            window.location.href = '404.html';
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('adminSidebar');
+            const overlay = document.getElementById('mobileSidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Section Views Configuration (Right Side Buttons Redirect to 404)
+        const adminViews = {
+            overview: `
+                <div class="bg-gradient-to-r from-slate-950 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <span class="text-amber-400 text-xs tracking-widest font-bold uppercase">✦ Administrator Access</span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold mt-1">Welcome back,  <span class="text-amber-400" id="welcomeAdminName">${extractedAdminName}</span></h2>
+                        <p class="text-xs text-slate-300 mt-1">Active Admin Email Account: <span class="text-white font-semibold" id="bannerAdminEmail">${adminEmail}</span></p>
+                    </div>
+                    <button onclick="redirectTo404()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition shadow">Generate Audit Report</button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Total Managed Portfolios</p>
+                        <h3 class="text-xl font-extrabold text-slate-900 mt-1 font-serif">$64,500,000</h3>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Active Broker Deals</p>
+                        <h3 class="text-xl font-extrabold text-slate-900 mt-1 font-serif">14 Escrows</h3>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Pending Approvals</p>
+                        <h3 class="text-xl font-extrabold text-amber-600 mt-1 font-serif">3 Requests</h3>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Security Clearance</p>
+                        <h3 class="text-xl font-extrabold text-emerald-600 mt-1">Level 1 (Full)</h3>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-sm font-bold text-slate-900">Brokerage Capital Performance</h4>
+                            <button onclick="redirectTo404()" class="text-xs text-amber-600 hover:underline font-semibold">View Details</button>
+                        </div>
+                        <div class="relative h-64 w-full"><canvas id="brokerChart"></canvas></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 mb-2">Quick Broker Actions</h4>
+                            <p class="text-xs text-slate-500 mb-4">Manage system access and broker credentials.</p>
+                            <div class="space-y-2.5">
+                                <button onclick="redirectTo404()" class="w-full text-left px-4 py-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 transition flex items-center justify-between">
+                                    <span>Register New Client</span> <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                                </button>
+                                <button onclick="redirectTo404()" class="w-full text-left px-4 py-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 transition flex items-center justify-between">
+                                    <span>Clear Wire Transfer</span> <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button onclick="redirectTo404()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-xs transition mt-4">Security Logs</button>
+                    </div>
+                </div>
+            `,
+
+            clients: `
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-lg font-extrabold text-slate-900">Client Management Directory</h2>
+                            <p class="text-xs text-slate-500">Oversee portfolio access and investor KYC statuses.</p>
+                        </div>
+                        <button onclick="redirectTo404()" class="bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-slate-800 transition">+ Add Investor Account</button>
+                    </div>
+                    <div class="space-y-3 overflow-x-auto">
+                        <div class="min-w-[600px] flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center text-xs">JD</div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900">john.doe@gmail.com</h4>
+                                    <p class="text-[10px] text-slate-500">Portfolio: $14.8M • Tier-1 Accredited</p>
+                                </div>
+                            </div>
+                            <button onclick="redirectTo404()" class="bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition">Manage Permissions</button>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            escrows: `
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-lg font-extrabold text-slate-900">Listings &amp; Escrow Management</h2>
+                            <p class="text-xs text-slate-500">Monitor active residential and commercial property escrows.</p>
+                        </div>
+                        <button onclick="redirectTo404()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2.5 rounded-xl text-xs font-bold transition">New Escrow Filing</button>
+                    </div>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">The Glass Pavilion - Malibu Bluffs</h4>
+                            <p class="text-[10px] text-slate-500">Escrow Amount: $12,500,000 • Status: Under Deposit</p>
+                        </div>
+                        <button onclick="redirectTo404()" class="bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition">View Deed</button>
+                    </div>
+                </div>
+            `,
+
+            approvals: `
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 class="text-lg font-extrabold text-slate-900 mb-1">Off-Market Reserve Approvals</h2>
+                    <p class="text-xs text-slate-500 mb-6">Authorize client access to confidential high-value properties.</p>
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex justify-between items-center">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900">Bel-Air Sanctuary Villa - Los Angeles</h4>
+                            <p class="text-[10px] text-amber-600 font-semibold">Pending Review for Investor Clearance</p>
+                        </div>
+                        <button onclick="redirectTo404()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-1.5 rounded-lg text-xs font-bold transition">Approve Access</button>
+                    </div>
+                </div>
+            `,
+
+            ledger: `
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 class="text-lg font-extrabold text-slate-900 mb-1">Global Escrow Ledger</h2>
+                    <p class="text-xs text-slate-500 mb-6">Institutional wire transfers and liquidity registers.</p>
+                    <button onclick="redirectTo404()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition">Export Financial Statement (.CSV)</button>
+                </div>
+            `,
+
+            audits: `
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 class="text-lg font-extrabold text-slate-900 mb-1">Appraisal &amp; Valuation Audits</h2>
+                    <p class="text-xs text-slate-500 mb-6">Certified third-party real estate valuations.</p>
+                    <button onclick="redirectTo404()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition">Upload New Appraisal Audit</button>
+                </div>
+            `,
+
+            security: `
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-xl">
+                    <h2 class="text-lg font-extrabold text-slate-900 mb-1">System Security &amp; Configurations</h2>
+                    <p class="text-xs text-slate-500 mb-6">Manage global security keys and administrator parameters.</p>
+                    <form onsubmit="event.preventDefault(); redirectTo404();" class="space-y-4 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">System Environment</label>
+                            <input type="text" value="Production - Secure Tier-1" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 font-medium">
+                        </div>
+                        <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-2.5 rounded-xl transition">Save Parameters</button>
+                    </form>
+                </div>
+            `
+        };
+
+        function switchSection(sectionKey) {
+            document.querySelectorAll('aside nav button').forEach(btn => {
+                btn.className = "w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition";
+                const icon = btn.querySelector('i');
+                if(icon) icon.className = icon.className.replace('text-amber-400', 'text-slate-400');
+            });
+
+            const activeBtn = document.getElementById('nav-' + sectionKey);
+            activeBtn.className = "w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-amber-500/10 text-amber-400 font-semibold transition shadow-sm border border-amber-500/20";
+            const activeIcon = activeBtn.querySelector('i');
+            if(activeIcon) activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-amber-400');
+
+            document.getElementById('dynamicContentContainer').innerHTML = adminViews[sectionKey];
+            
+            // Close mobile menu if open
+            if(window.innerWidth < 768) {
+                toggleMobileMenu();
+            }
+
+            setTimeout(() => {
+                if (sectionKey === 'overview') {
+                    const ctx = document.getElementById('brokerChart');
+                    if(ctx) {
+                        new Chart(ctx.getContext('2d'), {
+                            type: 'line',
+                            data: {
+                                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                                datasets: [{
+                                    label: 'Capital Volume ($M)',
+                                    data: [42, 48, 51, 58, 61, 64.5],
+                                    borderColor: '#d97706',
+                                    backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                                    fill: true,
+                                    borderWidth: 3,
+                                    tension: 0.3
+                                }]
+                            },
+                            options: { responsive: true, maintainAspectRatio: false }
+                        });
+                    }
+                }
+            }, 50);
+        }
+
+        // Initialize default view
+        switchSection('overview');
+    </script>
+</body>
+</html>
