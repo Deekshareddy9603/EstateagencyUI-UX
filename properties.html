@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stackly - Real Estate Agency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-900 bg-white selection:bg-slate-900 selection:text-white pt-20">
+
+<!-- Navbar Container (Fixed at top so it never scrolls away on both desktop & mobile) -->
+<header class="w-full bg-white border-b border-gray-100/80 fixed top-0 inset-x-0 z-50 shadow-sm">
+    <div class="max-w-[1460px] mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+        <!-- Logo Slot (Single big logo instance) -->
+        <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="location.href='./index.html'">
+            <div class="h-10 sm:h-12 flex items-center">
+                <a href="./index.html">
+                <img src="./main logo.webp" alt="Stackly Logo" class="h-9 sm:h-11 w-auto object-contain hidden" id="custom-logo-img" onload="this.classList.remove('hidden'); document.getElementById('fallback-logo').classList.add('hidden');"></a>
+                <!-- Fallback Logo shown until image path is set/loaded -->
+                <div id="fallback-logo" class="flex items-center space-x-2">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#081628] flex items-center justify-center text-white font-bold shadow-sm">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <span class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">STACKLY</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Links (Desktop) -->
+        <nav class="hidden lg:flex items-center space-x-8 text-[15px] font-medium text-slate-600">
+          <a href="./index.html" class="hover:text-slate-900 transition-colors">Home</a>
+             <a href="./properties.html" class="text-slate-900 font-semibold transition-colors">Properties</a>
+            <a href="./buy.html" class="hover:text-slate-900 transition-colors">Buy</a>
+            <a href="./rent.html" class="hover:text-slate-900 transition-colors">Rent</a>
+            <a href="./sell.html" class="hover:text-slate-900 transition-colors">Sell</a>
+            <a href="./about.html" class="hover:text-slate-900 transition-colors">About Us</a>
+            <a href="./contact.html" class="hover:text-slate-900 transition-colors">Contact</a>
+        </nav>
+
+        <!-- Right Actions (Desktop) -->
+        <div class="hidden lg:flex items-center space-x-6 shrink-0">
+            <a href="login.html" class="text-[15px] font-medium text-slate-700 hover:text-slate-900 transition-colors">
+                Login
+            </a>
+            <a href="./postproperty.html" class="bg-[#081628] hover:bg-[#0c2340] text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg shadow-sm transition-all transform active:scale-95 inline-block">
+                + Post Property
+            </a>
+        </div>
+
+        <!-- Single Mobile Toggle Slot (Same position for 3-lines / Close button, zero overlap) -->
+        <div class="flex items-center lg:hidden shrink-0">
+            <button onclick="toggleMobileMenu()" id="mobile-menu-btn" aria-label="Toggle menu" class="text-slate-800 p-2 rounded-lg focus:outline-none hover:bg-slate-100 transition-colors">
+                <svg id="menu-icon-open" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <svg id="menu-icon-close" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Full Screen Mobile Drawer / Overlay (Clean layout, zero label noise, zero overflow) -->
+    <div id="mobile-menu" class="fixed inset-x-0 top-20 bottom-0 bg-white z-50 hidden flex-col justify-between overflow-y-auto lg:hidden">
+        <!-- Navigation Links List -->
+        <div class="px-6 py-6">
+            <nav class="flex flex-col space-y-1 text-lg font-semibold text-slate-800">
+
+               <a href="./index.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Home</a>
+               <a href="./properties.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-900 border-b border-gray-100">Properties</a>
+                <a href="./buy.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Buy</a>
+                <a href="./rent.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Rent</a>
+                <a href="./sell.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Sell</a>
+                <a href="./about.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">About Us</a>
+                <a href="./contact.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Contact</a>
+            </nav>
+        </div>
+
+        <!-- Bottom Action Buttons inside Drawer -->
+        <div class="p-6 border-t border-gray-100 bg-slate-50 flex flex-col space-y-3">
+            <a href="login.html" class="w-full text-center bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 text-[15px] font-semibold py-3 rounded-xl shadow-sm transition-all block">
+                Login
+            </a>
+            <a href="./postproperty.html" class="w-full text-center bg-[#081628] hover:bg-[#0c2340] text-white text-[15px] font-semibold py-3.5 rounded-xl shadow-md transition-all block">
+                + Post Property
+            </a>
+        </div>
+    </div>
+</header>
+
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const openIcon = document.getElementById('menu-icon-open');
+        const closeIcon = document.getElementById('menu-icon-close');
+        const isHidden = menu.classList.contains('hidden');
+
+        if (isHidden) {
+            menu.classList.remove('hidden');
+            menu.classList.add('flex');
+            openIcon.classList.add('hidden');
+            closeIcon.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } else {
+            menu.classList.add('hidden');
+            menu.classList.remove('flex');
+            openIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+</script>
+
+<!-- HERO SECTION -->
+<section class="relative text-white overflow-visible w-full py-12 md:py-0 md:h-[360px]" style="">
+    <!-- Background image layer with a soft gradient overlay only on the left side -->
+    <div class="absolute inset-0 z-0">
+        <img src="./Modern luxury villa with warm twilight glow.webp" alt="Background Image" class="w-full h-full object-cover">
+        <!-- Soft dark gradient fading from left to right -->
+        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="max-w-[1440px] w-full mx-auto px-6 md:pt-10 relative z-10">
+        <div class="flex flex-col md:flex-row items-start justify-between gap-4 md:gap-0">
+            
+            <!-- Left Side: Title & Description -->
+            <div class="max-w-3xl">
+                <span class="text-xs sm:text-sm font-semibold tracking-widest uppercase text-blue-400 mb-2 block">PROPERTIES</span>
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[46px] font-extrabold tracking-tight text-white mb-2.5 md:whitespace-nowrap">Find Your Perfect Property</h1>
+                <p class="text-gray-200 text-sm sm:text-base font-normal">
+                    Explore our wide range of residential, commercial and rental properties in the best locations.
+                </p>
+            </div>
+            
+            <!-- Right Side: Home & Properties Breadcrumb -->
+            <div class="hidden md:flex items-center space-x-2 text-sm text-gray-200 bg-black/40 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10 mt-1">
+                <a href="./index.html" class="flex items-center space-x-1 hover:text-white transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    <span>Home</span>
+                </a>
+                <span class="text-gray-400">›</span>
+                <span class="text-white font-medium">Properties</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Floating Search Filter Bar -->
+    <div class="relative md:absolute left-0 right-0 md:-bottom-[39px] z-20 flex justify-center px-4 md:px-6 mt-8 md:mt-0">
+        <form action="404.html" method="GET" class="bg-white text-slate-900 shadow-2xl grid grid-cols-1 lg:grid-cols-5 gap-3 items-center border border-slate-200/80 w-full" style="width: 1280px; max-width: 100%; min-height: 78px; padding-left: 24px; padding-right: 12px; padding-top: 12px; padding-bottom: 12px; border-radius: 12px; border-width: 1px;">
+            
+            <!-- 1. Category / Action Selector -->
+            <div class="flex items-center bg-[#0084ff] hover:bg-[#006fd6] transition-colors px-3 py-2.5 md:py-2 rounded-xl cursor-pointer shadow-sm">
+                <select name="action_type" class="w-full bg-transparent text-white font-semibold text-sm focus:outline-none cursor-pointer">
+                    <option value="buy" class="text-slate-900 bg-white">Buy</option>
+                    <option value="rent" class="text-slate-900 bg-white">Rent</option>
+                    <option value="sell" class="text-slate-900 bg-white">Sell</option>
+                </select>
+            </div>
+
+            <!-- 2. Location Input -->
+            <div class="flex items-center space-x-2.5 bg-slate-50 hover:bg-slate-100/80 transition-colors px-3 py-2 rounded-xl border border-gray-200/60">
+                <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <div class="w-full">
+                    <span class="block text-[9px] uppercase font-bold tracking-wider text-slate-400">LOCATION</span>
+                    <select name="location" required class="w-full bg-transparent text-slate-800 text-sm font-medium focus:outline-none cursor-pointer">
+                        <option value="" disabled selected>Select location</option>
+                        <option value="new-york">New York</option>
+                        <option value="los-angeles">Los Angeles</option>
+                        <option value="miami">Miami</option>
+                        <option value="chicago">Chicago</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 3. Property Type -->
+            <div class="flex items-center space-x-2.5 bg-slate-50 hover:bg-slate-100/80 transition-colors px-3 py-2 rounded-xl border border-gray-200/60">
+                <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <div class="w-full">
+                    <span class="block text-[9px] uppercase font-bold tracking-wider text-slate-400">PROPERTY TYPE</span>
+                    <select name="property_type" required class="w-full bg-transparent text-slate-800 text-sm font-medium focus:outline-none cursor-pointer">
+                        <option value="" disabled selected>All Types</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="villa">Villa</option>
+                        <option value="house">House</option>
+                        <option value="commercial">Commercial</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 4. Price Range -->
+            <div class="flex items-center space-x-2.5 bg-slate-50 hover:bg-slate-100/80 transition-colors px-3 py-2 rounded-xl border border-gray-200/60">
+                <span class="text-slate-400 font-bold text-base shrink-0">₹</span>
+                <div class="w-full">
+                    <span class="block text-[9px] uppercase font-bold tracking-wider text-slate-400">PRICE RANGE</span>
+                    <select name="price_range" required class="w-full bg-transparent text-slate-800 text-sm font-medium focus:outline-none cursor-pointer">
+                        <option value="" disabled selected>Any Price</option>
+                        <option value="0-50l">Under ₹50 Lakhs</option>
+                        <option value="50l-1cr">₹50 Lakhs - ₹1 Crore</option>
+                        <option value="1cr+">₹1 Crore+</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 5. Search Button -->
+            <div>
+                <button type="submit" class="w-full bg-[#0084ff] hover:bg-[#006fd6] text-white font-semibold py-3 px-5 rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 active:scale-[0.98] whitespace-nowrap">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <span>Search Properties</span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</section>
+
+<!-- Spacer div to keep content below from clipping into the overlapping search bar -->
+<div class="h-16"></div>
+<!-- PROPERTIES MAIN SECTION -->
+<section class="max-w-[1440px] w-full mx-auto px-6 py-12 ">
+    
+    <!-- Main Grid: Left Sidebar + Right Property Cards -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+        
+        <!-- LEFT SIDEBAR: FILTER PROPERTIES -->
+        <aside class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm lg:sticky lg:top-6">
+            
+            <!-- Header aligned to match image -->
+            <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-100">
+                <div class="flex items-center space-x-2 text-slate-900 font-bold">
+                    <img src="./1.webp" alt="Filter Icon" class="w-5 h-5 object-contain">
+                    <span>Filter Properties</span>
+                </div>
+                <button type="button" onclick="resetFilters()" class="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                    Clear All
+                </button>
+            </div>
+
+            <form id="filterForm" class="space-y-6">
+                
+                <!-- PROPERTY TYPE -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Property Type</h3>
+                    <div class="space-y-2.5">
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="checkbox" checked class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span class="flex items-center space-x-2">
+                                <img src="./2.webp" alt="Icon" class="w-4 h-4 object-contain">
+                                <span>Apartments</span>
+                            </span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="checkbox" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span class="flex items-center space-x-2">
+                                <img src="./3.webp" alt="Icon" class="w-4 h-4 object-contain">
+                                <span>Villas</span>
+                            </span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="checkbox" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span class="flex items-center space-x-2">
+                                <img src="./4.webp" alt="Icon" class="w-4 h-4 object-contain">
+                                <span>Independent Houses</span>
+                            </span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="checkbox" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span class="flex items-center space-x-2">
+                                <img src="./5.webp" alt="Icon" class="w-4 h-4 object-contain">
+                                <span>Plots & Land</span>
+                            </span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="checkbox" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span class="flex items-center space-x-2">
+                                <img src="./6.webp" alt="Icon" class="w-4 h-4 object-contain">
+                                <span>Commercial</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="border-slate-100">
+
+                <!-- PRICE RANGE -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Price Range</h3>
+                    <div class="space-y-2.5">
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="radio" name="price" checked class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span>Any Price</span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="radio" name="price" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span>₹0 - ₹25 Lakhs</span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="radio" name="price" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span>₹25 Lakhs - ₹50 Lakhs</span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="radio" name="price" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span>₹50 Lakhs - ₹1 Cr</span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="radio" name="price" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span>₹1 Cr - ₹2 Cr</span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="radio" name="price" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span>₹2 Cr+</span>
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="border-slate-100">
+
+                <!-- BEDROOMS -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Bedrooms</h3>
+                    <div class="space-y-2.5">
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="checkbox" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span>1 BHK</span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="checkbox" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span>2 BHK</span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="checkbox" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span>3 BHK</span>
+                        </label>
+                        <label class="flex items-center space-x-3 text-sm text-slate-700 cursor-pointer select-none">
+                            <input type="checkbox" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                            <span>4+ BHK</span>
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="border-slate-100">
+
+              <!-- LOCATION -->
+<div>
+    <!-- Header with Location Icon outside, placed before the text -->
+    <div class="flex items-center space-x-2 mb-2">
+        <img src="./lo.webp" alt="Location Icon" class="w-4 h-4 object-contain">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900">Location</h3>
+    </div>
+    
+    <div class="relative">
+        <select class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-blue-500 cursor-pointer appearance-none">
+            <option value="" disabled selected>Select Location</option>
+            <option value="bengaluru">Bengaluru, Karnataka</option>
+            <option value="hyderabad">Hyderabad, Telangana</option>
+            <option value="chennai">Chennai, Tamil Nadu</option>
+            <option value="mumbai">Mumbai, Maharashtra</option>
+            <option value="vijayawada">Vijayawada, Andhra Pradesh</option>
+            <option value="tirupati">Tirupati, Andhra Pradesh</option>
+        </select>
+        
+        <!-- Dropdown arrow on the right -->
+        <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </div>
+    </div>
+</div>
+
+                <!-- Apply Filters Button -->
+                <button type="button" onclick="window.location.href='404.html'" class="w-full bg-[#0084ff] hover:bg-[#006fd6] text-white font-semibold py-3 rounded-xl shadow-md transition-all text-center">
+                    Apply Filters
+                </button>
+
+            </form>
+        </aside>
+
+        <!-- RIGHT SIDE: RESULTS HEADER & PROPERTY CARDS -->
+        <div class="lg:col-span-3">
+            
+            <!-- Top Bar aligned precisely over the property cards -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                <p class="text-slate-600 font-medium text-sm sm:text-base">
+                    Showing <span class="font-semibold text-slate-900" id="showingRange">1 – 12</span> of <span class="font-semibold text-slate-900">48</span> Properties
+                </p>
+
+                <div class="flex items-center space-x-3">
+                    <span class="text-sm font-medium text-slate-500 whitespace-nowrap">Sort by:</span>
+                    <select id="sortSelect" class="bg-white border border-slate-200 text-slate-800 text-sm font-medium rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 cursor-pointer shadow-sm">
+                        <option value="newest">Newest First</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="popular">Most Popular</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Property Cards Grid -->
+            <div id="propertySlider" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- 1. Luxury Villa with Private Pool -->
+                <div class="property-card bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-slide="1">
+                    <div>
+                        <div class="relative h-48 w-full">
+                            <img src="./Luxury Villa with Private Pool.webp" alt="Villa" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-[#10b981] text-white text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">For Sale</span>
+                            <button class="absolute top-3 right-3 bg-white/80 hover:bg-white text-slate-700 p-2 rounded-full transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-slate-900 text-base mb-1 truncate">Luxury Vila Private Pc</h3>
+                            <p class="text-xs text-slate-500 flex items-center space-x-1.5 mb-3">
+                                <img src="./loo.webp" alt="Location" class="w-3.5 h-3.5 object-contain shrink-0">
+                                <span class="truncate">Bengaluru, Karnataka</span>
+                            </p>
+                            <div class="text-blue-600 font-extrabold text-lg mb-4">₹ 3,50,00,000</div>
+                            <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500 font-medium">
+                                <span class="flex items-center space-x-1.5"><img src="./bed.webp" alt="Bed" class="w-4 h-4 object-contain"><span>4 Beds</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./bath.webp" alt="Bath" class="w-4 h-4 object-contain"><span>4 Baths</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./55.webp" alt="Sqft" class="w-4 h-4 object-contain"><span>4,500 Sq.ft</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <a href="404.html" class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-semibold py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1">
+                            <span>View Details</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 2. Modern 3 BHK Apartment -->
+                <div class="property-card bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-slide="1">
+                    <div>
+                        <div class="relative h-48 w-full">
+                            <img src="./Modern 3 BHK Apartment.webp" alt="Apartment" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-[#0084ff] text-white text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">For Rent</span>
+                            <button class="absolute top-3 right-3 bg-white/80 hover:bg-white text-slate-700 p-2 rounded-full transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-slate-900 text-base mb-1 truncate">Modern 3 BHK Apartment</h3>
+                            <p class="text-xs text-slate-500 flex items-center space-x-1.5 mb-3">
+                                <img src="./loo.webp" alt="Location" class="w-3.5 h-3.5 object-contain shrink-0">
+                                <span class="truncate">Hyderabad, Telangana</span>
+                            </p>
+                            <div class="text-blue-600 font-extrabold text-lg mb-4">₹ 65,000 <span class="text-xs text-slate-400 font-normal">/ month</span></div>
+                            <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500 font-medium">
+                                <span class="flex items-center space-x-1.5"><img src="./bed.webp" alt="Bed" class="w-4 h-4 object-contain"><span>3 Beds</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./bath.webp" alt="Bath" class="w-4 h-4 object-contain"><span>3 Baths</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./55.webp" alt="Sqft" class="w-4 h-4 object-contain"><span>1,800 Sq.ft</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <a href="404.html" class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-semibold py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1">
+                            <span>View Details</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                   <!-- 3. Premium Villa -->
+                <div class="property-card bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-slide="1">
+                    <div>
+                        <div class="relative h-48 w-full">
+                            <img src="./Premium Villa.webp" alt="Villa" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-[#10b981] text-white text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">For Sale</span>
+                            <button class="absolute top-3 right-3 bg-white/80 hover:bg-white text-slate-700 p-2 rounded-full transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-slate-900 text-base mb-1 truncate">Premium Villa</h3>
+                            <p class="text-xs text-slate-500 flex items-center space-x-1.5 mb-3">
+                                <img src="./loo.webp" alt="Location" class="w-3.5 h-3.5 object-contain shrink-0">
+                                <span class="truncate">Chennai, Tamil Nadu</span>
+                            </p>
+                            <div class="text-blue-600 font-extrabold text-lg mb-4">₹ 2,75,00,000</div>
+                            <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500 font-medium">
+                                <span class="flex items-center space-x-1.5"><img src="./bed.webp" alt="Bed" class="w-4 h-4 object-contain"><span>3 Beds</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./bath.webp" alt="Bath" class="w-4 h-4 object-contain"><span>3 Baths</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./55.webp" alt="Sqft" class="w-4 h-4 object-contain"><span>3,200 Sq.ft</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <a href="404.html" class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-semibold py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1">
+                            <span>View Details</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 4. Office Space -->
+                <div class="property-card bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-slide="1">
+                    <div>
+                        <div class="relative h-48 w-full">
+                            <img src="./Office Space.webp" alt="Office" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-[#0084ff] text-white text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">For Rent</span>
+                            <button class="absolute top-3 right-3 bg-white/80 hover:bg-white text-slate-700 p-2 rounded-full transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-slate-900 text-base mb-1 truncate">Office Space</h3>
+                            <p class="text-xs text-slate-500 flex items-center space-x-1.5 mb-3">
+                                <img src="./loo.webp" alt="Location" class="w-3.5 h-3.5 object-contain shrink-0">
+                                <span class="truncate">Mumbai, Maharashtra</span>
+                            </p>
+                            <div class="text-blue-600 font-extrabold text-lg mb-4">₹ 1,20,000 <span class="text-xs text-slate-400 font-normal">/ month</span></div>
+                            <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500 font-medium">
+                                <span class="flex items-center space-x-1.5"><img src="./bath.webp" alt="Bath" class="w-4 h-4 object-contain"><span>1 Bath</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./55.webp" alt="Sqft" class="w-4 h-4 object-contain"><span>1,500 Sq.ft</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <a href="404.html" class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-semibold py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1">
+                            <span>View Details</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 5. 2 BHK Apartment -->
+                <div class="property-card bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-slide="1">
+                    <div>
+                        <div class="relative h-48 w-full">
+                            <img src="./2 BHK Apartment.webp" alt="Apartment" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-[#10b981] text-white text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">For Sale</span>
+                            <button class="absolute top-3 right-3 bg-white/80 hover:bg-white text-slate-700 p-2 rounded-full transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-slate-900 text-base mb-1 truncate">2 BHK Apartment</h3>
+                            <p class="text-xs text-slate-500 flex items-center space-x-1.5 mb-3">
+                                <img src="./loo.webp" alt="Location" class="w-3.5 h-3.5 object-contain shrink-0">
+                                <span class="truncate">Vijayawada, Andhra Pradesh</span>
+                            </p>
+                            <div class="text-blue-600 font-extrabold text-lg mb-4">₹ 85,00,000</div>
+                            <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500 font-medium">
+                                <span class="flex items-center space-x-1.5"><img src="./bed.webp" alt="Bed" class="w-4 h-4 object-contain"><span>2 Beds</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./bath.webp" alt="Bath" class="w-4 h-4 object-contain"><span>2 Baths</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./55.webp" alt="Sqft" class="w-4 h-4 object-contain"><span>1,250 Sq.ft</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <a href="404.html" class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-semibold py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1">
+                            <span>View Details</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 6. Luxury Villa -->
+                <div class="property-card bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-slide="1">
+                    <div>
+                        <div class="relative h-48 w-full">
+                            <img src="./Luxury Villa.webp" alt="Villa" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-[#0084ff] text-white text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">For Rent</span>
+                            <button class="absolute top-3 right-3 bg-white/80 hover:bg-white text-slate-700 p-2 rounded-full transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-slate-900 text-base mb-1 truncate">Luxury Villa</h3>
+                            <p class="text-xs text-slate-500 flex items-center space-x-1.5 mb-3">
+                                <img src="./loo.webp" alt="Location" class="w-3.5 h-3.5 object-contain shrink-0">
+                                <span class="truncate">Tirupati, Andhra Pradesh</span>
+                            </p>
+                            <div class="text-blue-600 font-extrabold text-lg mb-4">₹ 45,000 <span class="text-xs text-slate-400 font-normal">/ month</span></div>
+                            <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500 font-medium">
+                                <span class="flex items-center space-x-1.5"><img src="./bed.webp" alt="Bed" class="w-4 h-4 object-contain"><span>3 Beds</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./bath.webp" alt="Bath" class="w-4 h-4 object-contain"><span>3 Baths</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./55.webp" alt="Sqft" class="w-4 h-4 object-contain"><span>2,600 Sq.ft</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <a href="404.html" class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-semibold py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1">
+                            <span>View Details</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+<!-- 7. Residential Plot -->
+                <div class="property-card bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-slide="1">
+                    <div>
+                        <div class="relative h-48 w-full">
+                            <img src="./Residential Plot.webp" alt="Plot" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-[#10b981] text-white text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">For Sale</span>
+                            <button class="absolute top-3 right-3 bg-white/80 hover:bg-white text-slate-700 p-2 rounded-full transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-slate-900 text-base mb-1 truncate">Residential Plot</h3>
+                            <p class="text-xs text-slate-500 flex items-center space-x-1.5 mb-3">
+                                <img src="./loo.webp" alt="Location" class="w-3.5 h-3.5 object-contain shrink-0">
+                                <span class="truncate">Guntur, Andhra Pradesh</span>
+                            </p>
+                            <div class="text-blue-600 font-extrabold text-lg mb-4">₹ 40,00,000</div>
+                            <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500 font-medium">
+                                <span class="flex items-center space-x-1.5"><img src="./55.webp" alt="Sqft" class="w-4 h-4 object-contain"><span>2,000 Sq.ft</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <a href="404.html" class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-semibold py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1">
+                            <span>View Details</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 8. Shop / Commercial Space -->
+                <div class="property-card bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between" data-slide="1">
+                    <div>
+                        <div class="relative h-48 w-full">
+                            <img src="./Commercial Space.webp" alt="Commercial" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-[#0084ff] text-white text-xs font-semibold px-2.5 py-1 rounded-md shadow-sm">For Rent</span>
+                            <button class="absolute top-3 right-3 bg-white/80 hover:bg-white text-slate-700 p-2 rounded-full transition-colors shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-slate-900 text-base mb-1 truncate">Shop / Commercial Space</h3>
+                            <p class="text-xs text-slate-500 flex items-center space-x-1.5 mb-3">
+                                <img src="./loo.webp" alt="Location" class="w-3.5 h-3.5 object-contain shrink-0">
+                                <span class="truncate">Bengaluru, Karnataka</span>
+                            </p>
+                            <div class="text-blue-600 font-extrabold text-lg mb-4">₹ 75,000 <span class="text-xs text-slate-400 font-normal">/ month</span></div>
+                            <div class="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500 font-medium">
+                                <span class="flex items-center space-x-1.5"><img src="./bath.webp" alt="Bath" class="w-4 h-4 object-contain"><span>1 Bath</span></span>
+                                <span class="flex items-center space-x-1.5"><img src="./55.webp" alt="Sqft" class="w-4 h-4 object-contain"><span>900 Sq.ft</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <a href="404.html" class="w-full border border-blue-600 text-blue-600 hover:bg-blue-50 text-xs font-semibold py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1">
+                            <span>View Details</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination & Arrow Navigation with numbers 1 to 5 -->
+    <div class="flex items-center justify-center mt-12 space-x-2">
+        <button onclick="prevSlide()" class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button onclick="goToSlide(1)" id="pageBtn1" class="w-10 h-10 flex items-center justify-center rounded-lg bg-[#0084ff] text-white font-semibold shadow-sm">1</button>
+        <button onclick="goToSlide(2)" id="pageBtn2" class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-colors">2</button>
+        <button onclick="goToSlide(3)" id="pageBtn3" class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-colors">3</button>
+        <button onclick="goToSlide(4)" id="pageBtn4" class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-colors">4</button>
+        <button onclick="goToSlide(5)" id="pageBtn5" class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-colors">5</button>
+        <button onclick="nextSlide()" class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+    </div>
+
+</section>
+
+<!-- Scripts to handle page navigation and dynamic count text -->
+<script>
+    let currentSlide = 1;
+    const totalSlides = 5;
+
+    function goToSlide(slideNum) {
+        currentSlide = slideNum;
+        
+        // Update active page button styles
+        for (let i = 1; i <= totalSlides; i++) {
+            const btn = document.getElementById('pageBtn' + i);
+            if (btn) {
+                if (i === slideNum) {
+                    btn.className = "w-10 h-10 flex items-center justify-center rounded-lg bg-[#0084ff] text-white font-semibold shadow-sm";
+                } else {
+                    btn.className = "w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition-colors";
+                }
+            }
+        }
+
+        // Update top text count range dynamically (e.g. 1-12, 13-24, etc.)
+        let start = (slideNum - 1) * 12 + 1;
+        let end = slideNum * 12;
+        document.getElementById('showingRange').innerText = `${start} – ${end}`;
+    }
+
+    function nextSlide() {
+        currentSlide = currentSlide >= totalSlides ? 1 : currentSlide + 1;
+        goToSlide(currentSlide);
+    }
+
+    function prevSlide() {
+        currentSlide = currentSlide <= 1 ? totalSlides : currentSlide - 1;
+        goToSlide(currentSlide);
+    }
+
+    function resetFilters() {
+        document.getElementById('filterForm').reset();
+    }
+</script>
+<!-- EXPLORE PROPERTIES IN TOP CITIES SECTION -->
+<section class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    
+    <!-- Section Header Container -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div>
+            <!-- Popular Metros Tag with location icon -->
+            <div class="flex items-center space-x-1.5 text-blue-600 text-xs font-bold tracking-wider uppercase mb-2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span>POPULAR METROS</span>
+            </div>
+            
+            <!-- Main Title & Subtitle -->
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1">
+                Explore Properties in Top Cities
+            </h2>
+            <p class="text-sm text-slate-500 font-medium">
+                Browse thousands of residential and commercial listings in high-demand metros
+            </p>
+        </div>
+
+        <!-- View All Link with Custom Arrow Icon Image -->
+        <a href="404.html" class="text-blue-600 hover:text-blue-700 font-semibold text-sm flex items-center space-x-1.5 group whitespace-nowrap">
+            <span>View All 28+ Cities</span>
+            <img src="./arr2.webp" alt="Arrow Icon" class="w-4 h-4 object-contain transition-transform group-hover:translate-x-1">
+        </a>
+    </div>
+
+    <!-- 5 Cards Grid Layout -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+        
+        <!-- 1. Bengaluru -->
+        <a href="404.html" class="group bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-blue-200 transition-all flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center p-2">
+                        <img src="./10.webp" alt="City Icon" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <img src="./s1.webp" alt="Number Image" class="h-6 object-contain">
+                    </div>
+                </div>
+                
+                <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-1">Bengaluru</h3>
+                <p class="text-xs text-slate-500 font-medium">14,250+ Active Properties</p>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700">
+                <span class="text-slate-400 font-normal">Avg. <span class="text-slate-800 font-semibold">₹9,400 / sq.ft</span></span>
+                <span class="text-slate-400 group-hover:translate-x-1 group-hover:text-blue-600 transition-all">→</span>
+            </div>
+        </a>
+
+        <!-- 2. Hyderabad -->
+        <a href="404.html" class="group bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-blue-200 transition-all flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center p-2">
+                        <img src="./9.webp" alt="City Icon" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <img src="./s2.webp" alt="Number Image" class="h-6 object-contain">
+                    </div>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-1">Hyderabad</h3>
+                <p class="text-xs text-slate-500 font-medium">11,800+ Active Properties</p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700">
+                <span class="text-slate-400 font-normal">Avg. <span class="text-slate-800 font-semibold">₹7,650 / sq.ft</span></span>
+                <span class="text-slate-400 group-hover:translate-x-1 group-hover:text-blue-600 transition-all">→</span>
+            </div>
+        </a>
+
+        <!-- 3. Mumbai MMR -->
+        <a href="404.html" class="group bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-blue-200 transition-all flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center p-2">
+                        <img src="./10.webp" alt="City Icon" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <img src="./s3.webp" alt="Number Image" class="h-6 object-contain">
+                    </div>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-1">Mumbai MMR</h3>
+                <p class="text-xs text-slate-500 font-medium">18,600+ Active Properties</p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700">
+                <span class="text-slate-400 font-normal">Avg. <span class="text-slate-800 font-semibold">₹19,200 / sq.ft</span></span>
+                <span class="text-slate-400 group-hover:translate-x-1 group-hover:text-blue-600 transition-all">→</span>
+            </div>
+        </a>
+
+        <!-- 4. Chennai -->
+        <a href="404.html" class="group bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-blue-200 transition-all flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center p-2">
+                        <img src="./8.webp" alt="City Icon" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <img src="./s4.webp" alt="Number Image" class="h-6 object-contain">
+                    </div>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-1">Chennai</h3>
+                <p class="text-xs text-slate-500 font-medium">8,950+ Active Properties</p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700">
+                <span class="text-slate-400 font-normal">Avg. <span class="text-slate-800 font-semibold">₹6,800 / sq.ft</span></span>
+                <span class="text-slate-400 group-hover:translate-x-1 group-hover:text-blue-600 transition-all">→</span>
+            </div>
+        </a>
+
+        <!-- 5. Pune -->
+        <a href="404.html" class="group bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md hover:border-blue-200 transition-all flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center p-2">
+                        <img src="./7.webp" alt="City Icon" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <img src="./s5.webp" alt="Number Image" class="h-6 object-contain">
+                    </div>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-1">Pune</h3>
+                <p class="text-xs text-slate-500 font-medium">9,420+ Active Properties</p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700">
+                <span class="text-slate-400 font-normal">Avg. <span class="text-slate-800 font-semibold">₹7,200 / sq.ft</span></span>
+                <span class="text-slate-400 group-hover:translate-x-1 group-hover:text-blue-600 transition-all">→</span>
+            </div>
+        </a>
+
+    </div>
+</section>
+<!-- WHY MILLIONS TRUST ESTATEPRO SECTION -->
+<section class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    
+    <!-- Section Header Container -->
+    <div class="text-center max-w-2xl mx-auto mb-12">
+        <!-- Small Tag -->
+        <div class="text-blue-600 text-xs font-bold tracking-wider uppercase mb-2">
+            THE ESTATEPRO ADVANTAGE
+        </div>
+        
+        <!-- Main Title -->
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-3">
+            Why Millions Trust EstatePro
+        </h2>
+        
+        <!-- Subtitle -->
+        <p class="text-sm text-slate-500 font-medium">
+            We bring end-to-end transparency, verified listings, and expert guidance to make your property journey smooth and risk-free.
+        </p>
+    </div>
+
+    <!-- 4 Cards Grid Layout (Responsive: 1 col on mobile, 2 on tablet, 4 on large screens) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Card 1: 100% Verified Listings -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+<div>
+                <!-- Custom Icon Image Container -->
+                <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center p-2.5 mb-5">
+                    <img src="./m1.webp" alt="Verified Icon" class="w-full h-full object-contain">
+                </div>
+                
+                <!-- Card Title & Description -->
+                <h3 class="text-base font-bold text-slate-900 mb-2">100% Verified Listings</h3>
+                <p class="text-xs text-slate-500 font-normal leading-relaxed">
+                    Every listing is physically audited with authentic HD photos, geocoded coordinates, and rigorous ownership title validation.
+                </p>
+            </div>
+
+            <!-- Bottom Action Link -->
+            <div class="mt-6 pt-4 border-t border-slate-100">
+                <a href="404.html" class="text-blue-600 hover:text-blue-700 font-semibold text-xs flex items-center space-x-1 group">
+                    <span>Learn about verification</span>
+                    <span class="transition-transform group-hover:translate-x-1">›</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 2: Zero Brokerage Options -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+                <!-- Custom Icon Image Container -->
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center p-2.5 mb-5">
+                    <img src="./m2.webp" alt="Brokerage Icon" class="w-full h-full object-contain">
+                </div>
+                
+                <h3 class="text-base font-bold text-slate-900 mb-2">Zero Brokerage Options</h3>
+                <p class="text-xs text-slate-500 font-normal leading-relaxed">
+                    Connect directly with verified individual property owners and save lakhs on hefty commission charges with direct negotiation.
+                </p>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100">
+                <a href="404.html" class="text-blue-600 hover:text-blue-700 font-semibold text-xs flex items-center space-x-1 group">
+                    <span>Browse zero-brokerage</span>
+                    <span class="transition-transform group-hover:translate-x-1">›</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 3: Dedicated Property Advisors -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+                <!-- Custom Icon Image Container -->
+                <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center p-2.5 mb-5">
+                    <img src="./m3.webp" alt="Advisor Icon" class="w-full h-full object-contain">
+                </div>
+                
+                <h3 class="text-base font-bold text-slate-900 mb-2">Dedicated Property Advisors</h3>
+                <p class="text-xs text-slate-500 font-normal leading-relaxed">
+                    Get personal advice from seasoned local experts, schedule hassle-free guided site visits, and receive market comparison reports.
+                </p>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100">
+                <a href="404.html" class="text-blue-600 hover:text-blue-700 font-semibold text-xs flex items-center space-x-1 group">
+                    <span>Talk to an advisor</span>
+                    <span class="transition-transform group-hover:translate-x-1">›</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 4: Seamless Legal & Loan Support -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+                <!-- Custom Icon Image Container -->
+                <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center p-2.5 mb-5">
+                    <img src="./m4.webp" alt="Legal Icon" class="w-full h-full object-contain">
+                </div>
+                
+                <h3 class="text-base font-bold text-slate-900 mb-2">Seamless Legal & Loan Support</h3>
+                <p class="text-xs text-slate-500 font-normal leading-relaxed">
+                    Full RERA compliance validation, lawyer document verification, and instant in-principle loan sanctions with 15+ partner banks.
+                </p>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100">
+                <a href="404.html" class="text-blue-600 hover:text-blue-700 font-semibold text-xs flex items-center space-x-1 group">
+                    <span>Check banking partners</span>
+                    <span class="transition-transform group-hover:translate-x-1">›</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- QUICK EMI & HOME LOAN CALCULATOR SECTION -->
+<section class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-12">
+    
+    <!-- Main Card Container with Dark Blue Background -->
+    <div class="bg-[#0b1329] rounded-3xl p-6 sm:p-10 lg:p-12 text-white shadow-xl">
+        
+        <!-- Section Header -->
+        <div class="mb-8 max-w-2xl">
+            <div class="flex items-center space-x-2 text-slate-400 text-xs font-bold tracking-wider uppercase mb-2">
+                <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <span>FINANCIAL PLANNING TOOLS</span>
+            </div>
+            
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
+                Quick EMI & Home Loan Calculator
+            </h2>
+            <p class="text-sm text-slate-400 font-medium">
+                Estimate your monthly financial commitment in seconds. Adjust loan amount, tenure, and bank interest rate to tailor your home purchase plan.
+            </p>
+        </div>
+
+        <!-- Calculator Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Left Side: Interactive Sliders (7 Columns) -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- 1. Loan Amount Slider -->
+                <div class="bg-[#131d38] border border-slate-700/60 rounded-2xl p-5">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold text-slate-300 uppercase tracking-wide">Loan Amount</span>
+                        <div class="bg-[#1b2a4a] text-blue-400 font-bold text-sm px-3 py-1.5 rounded-xl border border-blue-500/30" id="loanAmountDisplay">
+                            ₹ 50,00,000
+                        </div>
+                    </div>
+                    <input type="range" id="loanAmountRange" min="500000" max="30000000" step="100000" value="5000000" 
+                           class="w-full accent-blue-500 bg-slate-700 h-2 rounded-lg cursor-pointer">
+                    <div class="flex justify-between text-[11px] text-slate-400 mt-2 font-medium">
+                        <span>₹ 5 Lakhs</span>
+                        <span>₹ 1.5 Cr</span>
+                        <span>₹ 3 Cr+</span>
+                    </div>
+                </div>
+
+                <!-- 2. Interest Rate Slider -->
+                <div class="bg-[#131d38] border border-slate-700/60 rounded-2xl p-5">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold text-slate-300 uppercase tracking-wide">Interest Rate (p.a.)</span>
+                        <div class="bg-[#1b2a4a] text-blue-400 font-bold text-sm px-3 py-1.5 rounded-xl border border-blue-500/30" id="interestRateDisplay">
+                            8.50 %
+                        </div>
+                    </div>
+                    <input type="range" id="interestRateRange" min="6.5" max="15.0" step="0.1" value="8.5" 
+                           class="w-full accent-blue-500 bg-slate-700 h-2 rounded-lg cursor-pointer">
+                    <div class="flex justify-between text-[11px] text-slate-400 mt-2 font-medium">
+                        <span>6.5%</span>
+                        <span>10.5%</span>
+                        <span>15.0%</span>
+                    </div>
+                </div>
+
+                <!-- 3. Loan Tenure Slider -->
+                <div class="bg-[#131d38] border border-slate-700/60 rounded-2xl p-5">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-semibold text-slate-300 uppercase tracking-wide">Loan Tenure</span>
+                        <div class="bg-[#1b2a4a] text-blue-400 font-bold text-sm px-3 py-1.5 rounded-xl border border-blue-500/30" id="loanTenureDisplay">
+                            20 Years
+                        </div>
+                    </div>
+                    <input type="range" id="loanTenureRange" min="1" max="30" step="1" value="20" 
+                           class="w-full accent-blue-500 bg-slate-700 h-2 rounded-lg cursor-pointer">
+                    <div class="flex justify-between text-[11px] text-slate-400 mt-2 font-medium">
+                        <span>5 Years</span>
+                        <span>15 Years</span>
+                        <span>30 Years</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Side: Calculation Results & Action Card (5 Columns) -->
+            <div class="lg:col-span-5 bg-white text-slate-900 rounded-3xl p-6 sm:p-7 shadow-2xl flex flex-col justify-between">
+                <div>
+                    <!-- Card Top Header -->
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                        ESTIMATED MONTHLY OUTFLOW
+                    </div>
+                    
+                    <div class="flex items-baseline space-x-2 mb-1">
+                        <span class="text-3xl sm:text-4xl font-extrabold text-blue-600" id="monthlyEmiDisplay">₹ 43,391</span>
+                        <span class="text-xs text-slate-400 font-medium">/ month</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mb-6">Calculated based on standard reducing balance method</p>
+
+                    <!-- Breakdown Metrics -->
+                    <div class="space-y-3.5 mb-6 text-xs font-medium">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block"></span>
+                                <span class="text-slate-600">Principal Amount</span>
+                            </div>
+                            <span class="font-bold text-slate-900" id="principalText">₹ 50,00,000</span>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                                <span class="text-slate-600">Total Interest Payable</span>
+                            </div>
+                            <span class="font-bold text-slate-900" id="interestText">₹ 54,13,879</span>
+                        </div>
+
+                        <div class="flex items-center justify-between border-t border-slate-100 pt-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block"></span>
+                                <span class="text-slate-700 font-semibold">Total Payment (Principal + Interest)</span>
+                            </div>
+                            <span class="font-extrabold text-slate-900" id="totalPaymentText">₹ 1,04,13,879</span>
+                        </div>
+                    </div>
+
+                    <!-- Visual Progress Bar -->
+                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden flex mb-6">
+                        <div id="principalBar" class="bg-blue-600 h-full transition-all duration-300" style="width: 48%;"></div>
+                        <div id="interestBar" class="bg-emerald-500 h-full transition-all duration-300" style="width: 52%;"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <!-- Redirect Button -->
+                    <a href="./404.html" id="redirectButton" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center space-x-2 text-sm group">
+                        <span>Check Bank Loan Eligibility</span>
+                        <span class="transition-transform group-hover:translate-x-1">→</span>
+                    </a>
+
+                    <!-- Sub-features footer -->
+                    <div class="flex justify-center items-center space-x-4 mt-4 text-[11px] text-slate-500">
+                        <span class="flex items-center space-x-1">
+                            <span class="text-emerald-500">✓</span>
+                            <span>Instant sanction letter</span>
+                        </span>
+                        <span class="flex items-center space-x-1">
+                            <span class="text-emerald-500">✓</span>
+                            <span>Zero paperwork visit</span>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- JavaScript for Live Calculation -->
+<script>
+    const loanAmountRange = document.getElementById('loanAmountRange');
+    const interestRateRange = document.getElementById('interestRateRange');
+    const loanTenureRange = document.getElementById('loanTenureRange');
+
+    const loanAmountDisplay = document.getElementById('loanAmountDisplay');
+    const interestRateDisplay = document.getElementById('interestRateDisplay');
+    const loanTenureDisplay = document.getElementById('loanTenureDisplay');
+
+    const monthlyEmiDisplay = document.getElementById('monthlyEmiDisplay');
+    const principalText = document.getElementById('principalText');
+    const interestText = document.getElementById('interestText');
+    const totalPaymentText = document.getElementById('totalPaymentText');
+    
+    const principalBar = document.getElementById('principalBar');
+    const interestBar = document.getElementById('interestBar');
+
+    function formatIndianCurrency(num) {
+        let str = num.toString();
+        let lastThree = str.substring(str.length - 3);
+        let otherNumbers = str.substring(0, str.length - 3);
+        if (otherNumbers !== '') {
+            lastThree = ',' + lastThree;
+        }
+        let res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+        return "₹ " + res;
+    }
+
+    function calculateEMI() {
+        let P = parseFloat(loanAmountRange.value);
+        let annualRate = parseFloat(interestRateRange.value);
+        let R = annualRate / 12 / 100;
+        let N = parseInt(loanTenureRange.value) * 12;
+
+        // EMI Formula: [P x R x (1+R)^N]/[(1+R)^N - 1]
+        let emi = (P * R * Math.pow(1 + R, N)) / (Math.pow(1 + R, N) - 1);
+        let totalPayment = emi * N;
+        let totalInterest = totalPayment - P;
+
+        // Update Text displays
+        loanAmountDisplay.innerText = formatIndianCurrency(P);
+        interestRateDisplay.innerText = annualRate.toFixed(2) + " %";
+        loanTenureRange.value < 5 ? loanTenureDisplay.innerText = loanTenureRange.value + " Years" : loanTenureDisplay.innerText = loanTenureRange.value + " Years";
+        
+        monthlyEmiDisplay.innerText = formatIndianCurrency(Math.round(emi));
+        principalText.innerText = formatIndianCurrency(Math.round(P));
+        interestText.innerText = formatIndianCurrency(Math.round(totalInterest));
+        totalPaymentText.innerText = formatIndianCurrency(Math.round(totalPayment));
+
+        // Update Progress Bar widths
+        let pPercent = (P / totalPayment) * 100;
+        let iPercent = (totalInterest / totalPayment) * 100;
+        principalBar.style.width = pPercent + "%";
+        interestBar.style.width = iPercent + "%";
+    }
+
+    loanAmountRange.addEventListener('input', calculateEMI);
+    interestRateRange.addEventListener('input', calculateEMI);
+    loanTenureRange.addEventListener('input', calculateEMI);
+
+    // Run once on load
+    calculateEMI();
+</script>
+
+<!-- MEET OUR TOP VERIFIED AGENTS SECTION -->
+<section class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    
+    <!-- Section Header Container -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div>
+            <!-- Small Category Tag with Custom Image Icon -->
+            <div class="flex items-center space-x-1.5 text-blue-600 text-xs font-bold tracking-wider uppercase mb-2">
+                <img src="./ss.webp" alt="Advisor Icon" class="w-3.5 h-3.5 object-contain">
+                <span>EXPERT ADVISORS</span>
+            </div>
+            
+            <!-- Main Title & Subtitle -->
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1">
+                Meet Our Top Verified Agents
+            </h2>
+            <p class="text-sm text-slate-500 font-medium">
+                Work directly with high-performing property consultants with localized neighborhood insights
+            </p>
+        </div>
+
+        <!-- View All Agents Link -->
+        <a href="./404.html" class="text-blue-600 hover:text-blue-700 font-semibold text-sm flex items-center space-x-1 group whitespace-nowrap">
+            <span>View All 250+ Agents</span>
+            <span class="transition-transform group-hover:translate-x-1">→</span>
+        </a>
+    </div>
+
+    <!-- 4 Cards Grid Layout -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Agent 1: Priya Sharma -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+                <!-- Top Profile Info -->
+                <div class="flex items-start space-x-3.5 mb-4">
+                    <div class="relative flex-shrink-0">
+                        <img src="./Priya Sharma (1).webp" alt="Priya Sharma" class="w-12 h-12 rounded-full object-cover border border-slate-200">
+                        <!-- Online Status Dot -->
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900">Priya Sharma</h3>
+                        <p class="text-xs text-blue-600 font-medium">Senior Luxury Consultant</p>
+                        <div class="flex items-center space-x-1 mt-1 text-xs">
+                            <span class="text-amber-500 font-bold">★ 4.9</span>
+                            <span class="text-slate-400 font-medium">(142 reviews)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Divider -->
+                <div class="border-t border-slate-100 my-4"></div>
+
+                <!-- Details Specs List -->
+                <div class="space-y-2 text-xs mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Specialization:</span>
+                        <span class="text-slate-800 font-semibold text-right">Indiranagar, Bengaluru</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Active Listings:</span>
+                        <span class="text-emerald-600 font-bold">28 Properties</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Experience:</span>
+                        <span class="text-slate-800 font-semibold">9+ Years</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons Footer -->
+           <div class="grid grid-cols-2 gap-2 pt-2">
+    <!-- Call Button (Opens in same tab) -->
+    <a href="./404.html" class="flex items-center justify-center space-x-1.5 bg-slate-50 hover:bg-slate-100 text-blue-600 font-semibold text-xs py-2.5 px-3 rounded-xl border border-slate-200/60 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        <span>Call</span>
+    </a>
+    
+    <!-- WhatsApp Button (target="_blank" removed so Go Back works identically) -->
+    <a href="./404.html" class="flex items-center justify-center space-x-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold text-xs py-2.5 px-3 rounded-xl border border-emerald-200/50 transition-colors">
+        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.198-.198.347-.764.967-.937 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        <span>WhatsApp</span>
+    </a>
+</div>
+        </div>
+
+        <!-- Agent 2: Rajesh Varma -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+                <div class="flex items-start space-x-3.5 mb-4">
+                    <div class="relative flex-shrink-0">
+                        <img src="./Rajesh Varma.webp" alt="Rajesh Varma" class="w-12 h-12 rounded-full object-cover border border-slate-200">
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900">Rajesh Varma</h3>
+                        <p class="text-xs text-blue-600 font-medium">Commercial Specialist</p>
+                        <div class="flex items-center space-x-1 mt-1 text-xs">
+                            <span class="text-amber-500 font-bold">★ 4.95</span>
+                            <span class="text-slate-400 font-medium">(210 reviews)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-100 my-4"></div>
+
+                <div class="space-y-2 text-xs mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Specialization:</span>
+                        <span class="text-slate-800 font-semibold text-right">Hitec City, Hyderabad</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Active Listings:</span>
+                        <span class="text-emerald-600 font-bold">34 Properties</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Experience:</span>
+                        <span class="text-slate-800 font-semibold">12+ Years</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-2">
+    <!-- Call Button (Opens in same tab) -->
+    <a href="./404.html" class="flex items-center justify-center space-x-1.5 bg-slate-50 hover:bg-slate-100 text-blue-600 font-semibold text-xs py-2.5 px-3 rounded-xl border border-slate-200/60 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        <span>Call</span>
+    </a>
+    
+    <!-- WhatsApp Button (target="_blank" removed so Go Back works identically) -->
+    <a href="./404.html" class="flex items-center justify-center space-x-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold text-xs py-2.5 px-3 rounded-xl border border-emerald-200/50 transition-colors">
+        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.198-.198.347-.764.967-.937 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        <span>WhatsApp</span>
+    </a>
+</div>
+        </div>
+
+        <!-- Agent 3: Ananya Deshmukh -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+                <div class="flex items-start space-x-3.5 mb-4">
+                    <div class="relative flex-shrink-0">
+                        <img src="./Ananya Deshmukh.webp" alt="Ananya Deshmukh" class="w-12 h-12 rounded-full object-cover border border-slate-200">
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900">Ananya Deshmukh</h3>
+                        <p class="text-xs text-blue-600 font-medium">Residential & Land Lead</p>
+                        <div class="flex items-center space-x-1 mt-1 text-xs">
+                            <span class="text-amber-500 font-bold">★ 4.88</span>
+                            <span class="text-slate-400 font-medium">(98 reviews)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-100 my-4"></div>
+
+                <div class="space-y-2 text-xs mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Specialization:</span>
+                        <span class="text-slate-800 font-semibold text-right">Bandra & Juhu, Mumbai</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Active Listings:</span>
+                        <span class="text-emerald-600 font-bold">19 Properties</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Experience:</span>
+                        <span class="text-slate-800 font-semibold">7+ Years</span>
+                    </div>
+                </div>
+            </div>
+
+           <div class="grid grid-cols-2 gap-2 pt-2">
+    <!-- Call Button (Opens in same tab) -->
+    <a href="./404.html" class="flex items-center justify-center space-x-1.5 bg-slate-50 hover:bg-slate-100 text-blue-600 font-semibold text-xs py-2.5 px-3 rounded-xl border border-slate-200/60 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        <span>Call</span>
+    </a>
+    
+    <!-- WhatsApp Button (target="_blank" removed so Go Back works identically) -->
+    <a href="./404.html" class="flex items-center justify-center space-x-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold text-xs py-2.5 px-3 rounded-xl border border-emerald-200/50 transition-colors">
+        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.198-.198.347-.764.967-.937 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        <span>WhatsApp</span>
+    </a>
+</div>
+        </div>
+
+        <!-- Agent 4: Karthik Nambiar -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+            <div>
+                <div class="flex items-start space-x-3.5 mb-4">
+                    <div class="relative flex-shrink-0">
+                        <img src="./Karthik Nambiar.webp" alt="Karthik Nambiar" class="w-12 h-12 rounded-full object-cover border border-slate-200">
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900">Karthik Nambiar</h3>
+                        <p class="text-xs text-blue-600 font-medium">Gated Villa Specialist</p>
+                        <div class="flex items-center space-x-1 mt-1 text-xs">
+                            <span class="text-amber-500 font-bold">★ 4.92</span>
+                            <span class="text-slate-400 font-medium">(186 reviews)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-100 my-4"></div>
+
+                <div class="space-y-2 text-xs mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Specialization:</span>
+                        <span class="text-slate-800 font-semibold text-right">ECR & OMR, Chennai</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Active Listings:</span>
+                        <span class="text-emerald-600 font-bold">22 Properties</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400 font-medium">Experience:</span>
+                        <span class="text-slate-800 font-semibold">10+ Years</span>
+                    </div>
+                </div>
+            </div>
+<div class="grid grid-cols-2 gap-2 pt-2">
+    <!-- Call Button (Opens in same tab) -->
+    <a href="./404.html" class="flex items-center justify-center space-x-1.5 bg-slate-50 hover:bg-slate-100 text-blue-600 font-semibold text-xs py-2.5 px-3 rounded-xl border border-slate-200/60 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        <span>Call</span>
+    </a>
+    
+    <!-- WhatsApp Button (target="_blank" removed so Go Back works identically) -->
+    <a href="./404.html" class="flex items-center justify-center space-x-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold text-xs py-2.5 px-3 rounded-xl border border-emerald-200/50 transition-colors">
+        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.198-.198.347-.764.967-.937 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        <span>WhatsApp</span>
+    </a>
+</div>
+        </div>
+
+    </div>
+</section>
+<!-- SOCIAL PROOF / TESTIMONIALS SECTION -->
+<section class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    
+    <!-- Header Flex Container -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+        <div>
+            <!-- Small Category Tag -->
+            <div class="text-blue-600 text-xs font-bold tracking-wider uppercase mb-2">
+                SOCIAL PROOF
+            </div>
+            
+            <!-- Main Title & Subtitle -->
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-1">
+                Loved by 50,000+ Happy Homeowners
+            </h2>
+            <p class="text-sm text-slate-500 font-medium">
+                Read how buyers, tenants, and sellers closed their deals with 100% confidence
+            </p>
+        </div>
+
+        <!-- Top TrustScore Badge Card (Matching your exact layout reference) -->
+        <div class="bg-white border border-slate-200/80 shadow-sm rounded-2xl px-5 py-3.5 flex items-center space-x-4 self-start md:self-auto">
+            <div class="flex text-amber-500 text-sm space-x-0.5">★★★★★</div>
+            <div>
+                <div class="text-slate-900 font-extrabold text-base tracking-tight">4.9 / 5.0 TrustScore</div>
+                <p class="text-[11px] text-slate-400 font-medium whitespace-nowrap">Based on 18,400+ verified customer reviews</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3 Cards Grid Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Review Card 1: Deepika Rao -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+          <div>
+            <!-- 5-Star Rating -->
+            <div class="flex text-amber-500 text-sm mb-4 space-x-0.5">★★★★★</div>
+            
+            <!-- Testimonial Quote -->
+            <p class="text-slate-700 text-sm leading-relaxed mb-6 font-normal">
+              "EstatePro made finding our dream flat completely transparent. The 3D tour was completely accurate, title verification took 2 days, and their home loan desk got our rate locked at 8.4%."
+            </p>
+          </div>
+
+          <div>
+            <!-- Custom Image Icon Badge -->
+            <div class="inline-flex items-center space-x-2 bg-blue-50/80 border border-blue-100 text-blue-700 text-xs font-medium px-3 py-1.5 rounded-lg mb-6">
+              <img src="./pin.webp" alt="Icon" class="w-4 h-4 object-contain">
+              <span>Bought 3 BHK in Whitefield, Bengaluru</span>
+            </div>
+
+            <!-- Divider -->
+            <div class="border-t border-slate-100 mb-4"></div>
+
+            <!-- User Profile Details -->
+            <div class="flex items-center space-x-3">
+              <img src="./Deepika Rao.webp" alt="Deepika Rao" class="w-10 h-10 rounded-full object-cover border border-slate-200">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900">Deepika Rao</h4>
+                <p class="text-xs text-slate-400 font-medium">Software Architect, Tech Mahindra</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Card 2: Vikramaditya Roy -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex text-amber-500 text-sm mb-4 space-x-0.5">★★★★★</div>
+            
+            <p class="text-slate-700 text-sm leading-relaxed mb-6 font-normal">
+              "I posted my commercial office in Gachibowli with zero brokerage and received inquiries from 4 genuine MNC tenants within a week. Closed the lease agreement with digital signatures flawlessly."
+            </p>
+          </div>
+
+          <div>
+            <!-- Custom Image Icon Badge -->
+            <div class="inline-flex items-center space-x-2 bg-blue-50/80 border border-blue-100 text-blue-700 text-xs font-medium px-3 py-1.5 rounded-lg mb-6">
+              <img src="./pin.webp" alt="Icon" class="w-4 h-4 object-contain">
+              <span>Leased Commercial Office, Hyderabad</span>
+            </div>
+
+            <div class="border-t border-slate-100 mb-4"></div>
+
+            <div class="flex items-center space-x-3">
+              <img src="./Vikramaditya Roy.webp" alt="Vikramaditya Roy" class="w-10 h-10 rounded-full object-cover border border-slate-200">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900">Vikramaditya Roy</h4>
+                <p class="text-xs text-slate-400 font-medium">Managing Director, Roy Logistics</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Card 3: Sneha Kulkarni -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+          <div>
+            <div class="flex text-amber-500 text-sm mb-4 space-x-0.5">★★★★★</div>
+            
+            <p class="text-slate-700 text-sm leading-relaxed mb-6 font-normal">
+              "Relocating from Pune to Chennai was daunting until we used EstatePro. Our property manager handled the key handover, pest check, and utility transfers smoothly before we landed."
+            </p>
+          </div>
+
+          <div>
+            <!-- Custom Image Icon Badge -->
+            <div class="inline-flex items-center space-x-2 bg-blue-50/80 border border-blue-100 text-blue-700 text-xs font-medium px-3 py-1.5 rounded-lg mb-6">
+              <img src="./pin.webp" alt="Icon" class="w-4 h-4 object-contain">
+              <span>Rented Luxury Villa in OMR, Chennai</span>
+            </div>
+
+            <div class="border-t border-slate-100 mb-4"></div>
+
+            <div class="flex items-center space-x-3">
+              <img src="./Sneha Kulkarni.webp" alt="Sneha Kulkarni" class="w-10 h-10 rounded-full object-cover border border-slate-200">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900">Sneha Kulkarni</h4>
+                <p class="text-xs text-slate-400 font-medium">Design Director, FinTech Global</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+</section>
+<!-- MOBILE EXPERIENCE / APP DOWNLOAD BANNER SECTION -->
+<section class="w-full bg-blue-600 py-12 sm:py-16">
+    <div class="max-w-[1440px] w-full mx-auto px-4 sm:px-6">
+        
+        <!-- Outer Blue Banner Container -->
+        <div class="bg-blue-600 rounded-3xl p-8 sm:p-12 lg:p-16 text-white relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-12 shadow-lg">
+            
+            <!-- Left Column: Content & App Badges -->
+            <div class="max-w-xl">
+                <!-- Small Category Tag -->
+                <div class="inline-block bg-blue-700/60 border border-blue-500/50 text-blue-100 text-xs font-bold tracking-wider uppercase px-3 py-1 rounded-full mb-4">
+                    ESTATEPRO MOBILE EXPERIENCE
+                </div>
+                
+                <!-- Main Title -->
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4 leading-tight">
+                    Find Your Dream Home on the Go
+                </h2>
+                
+                <!-- Subtitle Description -->
+                <p class="text-blue-100 text-sm sm:text-base leading-relaxed mb-8">
+                    Receive real-time price drop notifications, browse verified listings with map-first navigation, and connect with property owners directly from your smartphone.
+                </p>
+                
+                <!-- App Store Buttons Container -->
+                <div class="flex flex-wrap items-center gap-4">
+                    <!-- Apple App Store Button -->
+                    <a href="./404.html" class="inline-flex items-center bg-black hover:bg-slate-900 text-white border border-slate-800 rounded-xl px-4 py-2.5 transition-all shadow-sm">
+                        <img src="./aaple.webp" alt="Apple Icon" class="w-6 h-6 object-contain mr-3">
+                        <div class="text-left">
+                            <div class="text-[9px] uppercase tracking-wider text-slate-400 font-medium">Download on the</div>
+                            <div class="text-xs sm:text-sm font-semibold tracking-tight">Apple App Store</div>
+                        </div>
+                    </a>
+
+                    <!-- Google Play Store Button -->
+                    <a href="./404.html" class="inline-flex items-center bg-black hover:bg-slate-900 text-white border border-slate-800 rounded-xl px-4 py-2.5 transition-all shadow-sm">
+                        <img src="./plaay.webp" alt="Google Play Icon" class="w-6 h-6 object-contain mr-3">
+                        <div class="text-left">
+                            <div class="text-[9px] uppercase tracking-wider text-slate-400 font-medium">Get it on</div>
+                            <div class="text-xs sm:text-sm font-semibold tracking-tight">Google Play</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Column: Interactive Property Alerts Form Box -->
+            <div class="w-full lg:max-w-md bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-1">
+                    Get Instant Property Alerts
+                </h3>
+                <p class="text-xs text-slate-500 mb-6">
+                    Never miss a new listing matching your preferred budget & locality.
+                </p>
+
+                <!-- Alert Subscription Form -->
+                <form id="propertyAlertForm" onsubmit="handleAlertSubscription(event)" class="space-y-4">
+                    
+                    <!-- Preferred City Field -->
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                            Preferred City / Micro-Market
+                        </label>
+                        <input 
+                            type="text" 
+                            id="preferredCity" 
+                            required 
+                            placeholder="e.g. Whitefield, Bengaluru or Gachibowli" 
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                        >
+                    </div>
+
+                    <!-- Email Address Field -->
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                            Your Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            id="userEmail" 
+                            required 
+                            placeholder="name@domain.com" 
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+                        >
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit" 
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-3.5 px-4 rounded-xl shadow-md transition-all mt-2"
+                    >
+                        Subscribe to Property Alerts
+                    </button>
+
+                    <!-- Disclaimer Footer -->
+                    <p class="text-[11px] text-center text-slate-400 mt-3">
+                        No spam ever. Unsubscribe with 1-click anytime.
+                    </p>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- JavaScript to handle validation and 404 redirection -->
+<script>
+    function handleAlertSubscription(event) {
+        event.preventDefault(); // Prevents default form submit behavior
+        
+        const cityInput = document.getElementById('preferredCity').value.trim();
+        const emailInput = document.getElementById('userEmail').value.trim();
+
+        // Check if details are correctly filled
+        if (cityInput !== "" && emailInput !== "") {
+            // Redirect to the 404 page if fields are valid
+            window.location.href = "404.html";
+        }
+    }
+</script>
+
+<footer class="footer-section" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #0b0f19; color: #94a3b8; width: 100%; box-sizing: border-box; margin: 24px 0 0 0; padding: 64px 48px;">
+  <div style="width: 100%; max-width: 1344px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr; gap: 40px; align-items: start;" class="footer-grid">
+    
+    <!-- Column 1: Home icon image first, Custom logo second + Bio -->
+    <div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; min-height: 46px;">
+        <!-- White Rounded Box with Home Icon Image (First) - Made Slightly Larger -->
+        <a href="./index.html" aria-label="Home" style="width: 46px; height: 46px; border-radius: 14px; background-color: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none; box-sizing: border-box; flex-shrink: 0;">
+          <img src="./footericon.webp" alt="Home Icon" style="width: 24px; height: 24px; object-fit: contain; display: block;" />
+        </a>
+
+        <!-- Replace src with your logo image path (Second) -->
+        <a href="./index.html" style="display: inline-block;">
+          <img src="./footer logo.webp" alt="Company Logo" style="height: 32px; width: auto; object-fit: contain; display: block;" />
+        </a>
+      </div>
+      <p style="font-size: 14px; color: #94a3b8; line-height: 1.6; margin: 0 0 24px 0; max-width: 280px;">
+        Your trusted partner in real estate. We help you find the perfect property for a better tomorrow.
+      </p>
+      
+     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <!-- Facebook -->
+        <a href="404.html" aria-label="Facebook" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#1877F2'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <!-- Twitter / X -->
+        <a href="404.html" aria-label="Twitter" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#000000'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <!-- Instagram -->
+        <a href="404.html" aria-label="Instagram" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#E4405F'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+        </a>
+        <!-- LinkedIn -->
+        <a href="404.html" aria-label="LinkedIn" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#0A66C2'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <!-- YouTube -->
+        <a href="404.html" aria-label="YouTube" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Column 2: Quick Links -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Quick Links</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="./index.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Home</a></li>
+        <li><a href="./about.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">About Us</a></li>
+        <li><a href="./contact.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Contact</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Privacy Policy</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Terms &amp; Conditions</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 3: Properties -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Properties</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Buy Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Rent Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Sell Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Featured Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">All Properties</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 4: Company -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Company</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Our Team</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Careers</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Blog</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">FAQs</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Testimonials</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 5: Newsletter -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 12px 0;">Newsletter</h3>
+      <p style="font-size: 13.5px; color: #94a3b8; line-height: 1.5; margin: 0 0 16px 0;">
+        Subscribe to get the latest property updates.
+      </p>
+      
+      <form id="stackly-newsletter-form" onsubmit="handleNewsletterSubmit(event)" style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <input 
+          type="email" 
+          id="newsletter-email" 
+          placeholder="Enter your email" 
+          style="flex: 1; min-width: 140px; background-color: #ffffff; color: #0f172a; border: none; border-radius: 8px; padding: 10px 14px; font-size: 13.5px; outline: none; box-sizing: border-box;"
+        />
+        <button 
+          type="submit" 
+          aria-label="Subscribe"
+          style="background-color: #2563eb; color: #ffffff; border: none; border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.2s, transform 0.1s; flex-shrink: 0;"
+          onmouseover="this.style.backgroundColor='#1d4ed8'"
+          onmouseout="this.style.backgroundColor='#2563eb'"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+      <div id="newsletter-error" style="color: #ef4444; font-size: 12px; margin-top: 6px; display: none;">Please enter the email first</div>
+    </div>
+
+  </div>
+
+  <style>
+    @media (max-width: 1024px) {
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+    @media (max-width: 640px) {
+      .footer-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .footer-section {
+        padding: 48px 20px !important;
+      }
+    }
+  </style>
+
+  <script>
+    function handleNewsletterSubmit(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('newsletter-email');
+      const errorMsg = document.getElementById('newsletter-error');
+      const emailVal = emailInput.value.trim();
+
+      if (!emailVal || !emailVal.includes('@')) {
+        errorMsg.style.display = 'block';
+        emailInput.style.border = '1px solid #ef4444';
+        return;
+      }
+      
+      errorMsg.style.display = 'none';
+      emailInput.style.border = 'none';
+      window.location.href = '404.html';
+    }
+  </script>
+</footer>
+
+
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const openIcon = document.getElementById('menu-icon-open');
+        const closeIcon = document.getElementById('menu-icon-close');
+        
+        if (!menu || !openIcon || !closeIcon) return;
+
+        const isHidden = menu.classList.contains('hidden');
+
+        if (isHidden) {
+            menu.classList.remove('hidden');
+            menu.classList.add('flex');
+            openIcon.classList.add('hidden');
+            closeIcon.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } else {
+            menu.classList.add('hidden');
+            menu.classList.remove('flex');
+            openIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+</script>
+
+</body>
+</html>
