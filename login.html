@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Client Portal - Aura Estates</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .auth-view { display: none; }
+        .auth-view.active-view { display: block; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+
+    <!-- Main Split Container -->
+    <div class="max-w-6xl w-full bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+        
+        <!-- LEFT COLUMN: Forms (Login & Signup Toggleable) -->
+        <div class="p-8 sm:p-12 flex flex-col justify-between">
+            <div>
+                <!-- Top Badge -->
+                <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-[10px] font-bold px-3 py-1.5 rounded-full border border-emerald-200 uppercase tracking-wider mb-6" id="topBadge">
+                    <i class="fa-solid fa-lock text-[9px]"></i> Private Client Portal
+                </div>
+
+                <!-- LOGIN VIEW -->
+                <div id="loginView" class="auth-view active-view">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Welcome back</h1>
+                    <p class="text-xs text-slate-500 mt-1.5 mb-6">Access institutional valuations, off-market inventory, and your personal portfolio concierge.</p>
+
+                    <!-- Role Selector Tabs -->
+                    <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-xl mb-6">
+                        <button type="button" onclick="setLoginRole('client')" id="loginClientTab" class="py-2 text-xs font-bold rounded-lg bg-white shadow-sm text-slate-900 transition">👤 Client / Buyer</button>
+                        <button type="button" onclick="setLoginRole('admin')" id="loginAdminTab" class="py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900 transition">🏛️ Licensed Agent &amp; Broker</button>
+                    </div>
+
+                    <form id="loginForm" class="space-y-4 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1.5">Work Email or Client ID</label>
+                            <div class="relative">
+                                <input type="email" id="loginEmail" placeholder="name@auraestates.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 pl-10 focus:outline-none focus:border-slate-400 text-slate-800 font-medium" required>
+                                <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-slate-400"></i>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label class="font-bold text-slate-700">Secure Password</label>
+                                <a href="404.html" class="text-slate-500 hover:text-slate-800 font-medium">Forgot password?</a>
+                            </div>
+                            <div class="relative">
+                                <input type="password" id="loginPassword" class="password-field w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 pl-10 pr-10 focus:outline-none focus:border-slate-400 text-slate-800" placeholder="••••••••••••" required> 
+                                <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-slate-400"></i>
+                                <i class="fa-solid fa-eye toggle-pass absolute right-3.5 top-3.5 text-slate-400 cursor-pointer"></i>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-1">
+                            <input type="checkbox" id="rememberMeCheckbox" class="rounded border-slate-300 w-4 h-4 text-slate-900" checked>
+                            <label for="rememberMeCheckbox" class="text-slate-600 font-medium">Remember me for 30 days</label>
+                        </div>
+
+                        <div class="text-red-500 font-semibold text-[11px]" id="loginError"></div>
+
+                        <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10">
+                            Sign in to Aura Estates <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <div class="text-center my-5 text-[11px] text-slate-400 uppercase tracking-widest font-bold">Or authenticate via</div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="404.html" class="border border-slate-200 py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-50 font-bold text-slate-700 transition">
+                            <img src="./abt38.webp" alt="Google" class="w-4 h-4 object-contain" onerror="this.style.display='none'"> 
+                            <span>Google SSO</span>
+                        </a>
+                        <a href="404.html" class="border border-slate-200 py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-50 font-bold text-slate-700 transition">
+                            <i class="fa-brands fa-apple text-slate-900 text-sm"></i> Apple Key
+                        </a>
+                    </div>
+
+                    <div class="text-center mt-6 text-xs text-slate-500">
+                        Don't have an account? <span onclick="toggleAuthMode()" class="font-bold text-slate-900 cursor-pointer hover:underline">Create an account</span>
+                    </div>
+                </div>
+
+                <!-- SIGN UP VIEW -->
+                <div id="signupView" class="auth-view">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Create your account</h1>
+                    <p class="text-xs text-slate-500 mt-1.5 mb-5">Unlock curated architectural estates, bespoke off-market private reserves, and direct advisory concierge.</p>
+
+                    <!-- Role Selector Tabs for Signup -->
+                    <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-xl mb-5">
+                        <button type="button" onclick="setSignupRole('client')" id="signupClientTab" class="py-2 text-xs font-bold rounded-lg bg-white shadow-sm text-slate-900 transition">👤 Private Buyer &amp; Investor</button>
+                        <button type="button" onclick="setSignupRole('admin')" id="signupAdminTab" class="py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900 transition">🏛️ Licensed Agent &amp; Broker</button>
+                    </div>
+
+                    <form id="signupForm" class="space-y-3.5 text-xs">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">First Name</label>
+                                <input type="text" id="signupFirstName" placeholder="Julian" pattern="[A-Za-z]+" title="Only alphabets allowed" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-slate-400 font-medium" required>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-slate-700 mb-1">Last Name</label>
+                                <input type="text" id="signupLastName" placeholder="Vanderbilt" pattern="[A-Za-z]+" title="Only alphabets allowed" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-slate-400 font-medium" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Email Address</label>
+                            <div class="relative">
+                                <input type="email" id="signupEmail" placeholder="name@gmail.com" pattern=".+@gmail\.com" title="Email must end with @gmail.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 pl-10 focus:outline-none focus:border-slate-400 font-medium" required>
+                                <i class="fa-solid fa-envelope absolute left-3.5 top-3 text-slate-400"></i>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Phone Number (10 Digits)</label>
+                            <div class="flex gap-2">
+                                <select class="bg-slate-50 border border-slate-200 rounded-xl px-2 py-2.5 font-medium text-slate-600">
+                                    <option>US +1</option>
+                                    <option>UK +44</option>
+                                    <option>IN +91</option>
+                                </select>
+                                <input type="tel" id="signupPhone" placeholder="5550192834" pattern="[0-9]{10}" maxlength="10" title="Enter exactly 10 digits" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-slate-400 font-medium" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="font-bold text-slate-700">Secure Password</label>
+                                <span class="text-[10px] text-slate-400 font-semibold">Min. 8 chars, 1 number, 1 special char</span>
+                            </div>
+                            <div class="relative">
+                                <input type="password" id="signupPassword" class="password-field w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 pl-10 pr-10 focus:outline-none focus:border-slate-400" placeholder="••••••••••••" required> 
+                                <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400"></i>
+                                <i class="fa-solid fa-eye toggle-pass absolute right-3.5 top-3 text-slate-400 cursor-pointer"></i>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 pt-1">
+                            <label class="flex items-start gap-2 cursor-pointer">
+                                <input type="checkbox" class="rounded border-slate-300 mt-0.5 w-4 h-4 text-slate-900" checked>
+                                <span class="text-slate-600 text-[11px] leading-tight">Notify me of private off-market listings matching my portfolio and acquisition criteria.</span>
+                            </label>
+                            <label class="flex items-start gap-2 cursor-pointer">
+                                <input type="checkbox" id="termsCheckbox" class="rounded border-slate-300 mt-0.5 w-4 h-4 text-slate-900" required>
+                                <span class="text-slate-600 text-[11px] leading-tight">I agree to the <a href="404.html" class="underline font-semibold">Terms of Service</a>, <a href="404.html" class="underline font-semibold">Privacy Policy</a>, and Fair Housing Act regulations.</span>
+                            </label>
+                        </div>
+
+                        <div class="text-red-500 font-semibold text-[11px]" id="signupError"></div>
+
+                        <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10 mt-2">
+                            Create Account <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <div class="text-center my-4 text-[10px] text-slate-400 uppercase tracking-widest font-bold">Or register with</div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <a href="404.html" class="border border-slate-200 py-2.5 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-50 font-bold text-slate-700 text-xs transition">
+                            <img src="./abt38.webp" alt="Google" class="w-4 h-4 object-contain" onerror="this.style.display='none'">
+                            <span>Google Account</span>
+                        </a>
+                        <a href="404.html" class="border border-slate-200 py-2.5 rounded-xl flex items-center justify-center gap-2 hover:bg-slate-50 font-bold text-slate-700 text-xs transition">
+                            <i class="fa-brands fa-apple text-slate-900"></i> Apple ID
+                        </a>
+                    </div>
+
+                    <div class="text-center mt-5 text-xs text-slate-500">
+                        Already have an account? <span onclick="toggleAuthMode()" class="font-bold text-slate-900 cursor-pointer hover:underline">Sign in</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Compliance Info -->
+            <div class="pt-8 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium mt-6">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-600"></i> 256-Bit SSL Encrypted</span>
+                <span>⚖️ NAR Compliant Brokerage</span>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Dark Visual Showcase with Stats Card -->
+        <div class="bg-[#0b1329] text-white p-8 sm:p-12 hidden lg:flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80');"></div>
+            
+            <div class="relative z-10 flex justify-between items-center text-xs tracking-wider uppercase font-semibold text-slate-400 border-b border-white/10 pb-4">
+                <span class="text-amber-400 flex items-center gap-1.5"><i class="fa-solid fa-star text-[10px]"></i> Private Client Reserve</span>
+                <span class="font-mono text-[10px]">Aura Monograph No. 24</span>
+            </div>
+
+            <div class="relative z-10 my-auto bg-slate-900/85 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-2xl space-y-4">
+                <div class="flex text-amber-400 text-xs gap-1">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p class="text-sm font-serif italic text-slate-200 leading-relaxed">
+                    "Haven made listing our $2.4M coastal property effortless. Under contract in 11 days with discreet precision."
+                </p>
+                <div class="flex items-center gap-3 pt-2 border-t border-white/10">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Agent" class="w-9 h-9 rounded-full object-cover border border-amber-400/50">
+                    <div>
+                        <h4 class="text-xs font-bold text-white">Elena &amp; Marcus Vance</h4>
+                        <p class="text-[10px] text-slate-400">Pacific Palisades Coastal Estate</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative z-10 grid grid-cols-2 gap-4 pt-6 border-t border-white/10">
+                <div class="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-sm">
+                    <h3 class="text-2xl font-extrabold font-serif text-white">$1.8B+</h3>
+                    <p class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mt-0.5">Volume Closed YTD</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 p-4 rounded-xl backdrop-blur-sm">
+                    <h3 class="text-2xl font-extrabold font-serif text-white">99.4%</h3>
+                    <p class="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mt-0.5">Verified Listings</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let isSignup = false;
+        let selectedLoginRole = 'client';
+        let selectedSignupRole = 'client';
+
+        function setLoginRole(role) {
+            selectedLoginRole = role;
+            const clientTab = document.getElementById('loginClientTab');
+            const adminTab = document.getElementById('loginAdminTab');
+            if(role === 'client') {
+                clientTab.className = "py-2 text-xs font-bold rounded-lg bg-white shadow-sm text-slate-900 transition";
+                adminTab.className = "py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900 transition";
+            } else {
+                adminTab.className = "py-2 text-xs font-bold rounded-lg bg-white shadow-sm text-slate-900 transition";
+                clientTab.className = "py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900 transition";
+            }
+        }
+
+        function setSignupRole(role) {
+            selectedSignupRole = role;
+            const clientTab = document.getElementById('signupClientTab');
+            const adminTab = document.getElementById('signupAdminTab');
+            if(role === 'client') {
+                clientTab.className = "py-2 text-xs font-bold rounded-lg bg-white shadow-sm text-slate-900 transition";
+                adminTab.className = "py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900 transition";
+            } else {
+                adminTab.className = "py-2 text-xs font-bold rounded-lg bg-white shadow-sm text-slate-900 transition";
+                clientTab.className = "py-2 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900 transition";
+            }
+        }
+
+        function toggleAuthMode() {
+            isSignup = !isSignup;
+            const loginView = document.getElementById('loginView');
+            const signupView = document.getElementById('signupView');
+            const topBadge = document.getElementById('topBadge');
+
+            if (isSignup) {
+                loginView.classList.remove('active-view');
+                signupView.classList.add('active-view');
+                topBadge.innerHTML = `<i class="fa-solid fa-sparkles text-[9px]"></i> Exclusive Membership`;
+            } else {
+                signupView.classList.remove('active-view');
+                loginView.classList.add('active-view');
+                topBadge.innerHTML = `<i class="fa-solid fa-lock text-[9px]"></i> Private Client Portal`;
+            }
+        }
+
+        // Toggle Password Visibility
+        document.querySelectorAll('.toggle-pass').forEach(toggleIcon => {
+            toggleIcon.addEventListener('click', function() {
+                const inputElement = this.parentElement.querySelector('.password-field');
+                if (inputElement.type === 'password') {
+                    inputElement.type = 'text';
+                    this.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    inputElement.type = 'password';
+                    this.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            });
+        });
+
+          // Login Handler with Password Validation
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const errorDiv = document.getElementById('loginError');
+            const password = document.getElementById('loginPassword').value;
+
+            // Password Validation: Min 8 chars, at least 1 number, at least 1 special character
+            const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>?[\]\\/'"`~|]).{8,}$/;
+
+            if (!passwordRegex.test(password)) {
+                errorDiv.innerText = "Password must be at least 8 characters long and include at least one number and one special character.";
+                return;
+            }
+
+            errorDiv.innerText = "";
+            const userEmail = document.getElementById('loginEmail').value;
+            localStorage.setItem('userEmail', userEmail);
+            window.location.href = selectedLoginRole === 'admin' ? 'admin-dashboard.html' : 'client-dashboard.html';
+        });
+
+        // Signup Handler with Password Validation & Silent Redirection
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const errorDiv = document.getElementById('signupError');
+            const password = document.getElementById('signupPassword').value;
+
+            // Password Validation: Min 8 chars, at least 1 number, at least 1 special character
+            const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>?[\]\\/'"`~|]).{8,}$/;
+            
+            if (!passwordRegex.test(password)) {
+                errorDiv.innerText = "Password must be at least 8 characters long and include at least one number and one special character.";
+                return;
+            }
+
+            errorDiv.innerText = "";
+            const firstName = document.getElementById('signupFirstName').value;
+            const userEmail = document.getElementById('signupEmail').value;
+
+            localStorage.setItem('currentUser', firstName);
+            localStorage.setItem('userEmail', userEmail);
+            
+            // Switch view instantly without popups
+            toggleAuthMode();
+            document.getElementById('signupForm').reset();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Client Dashboard - Aura Estates</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800 flex flex-col md:flex-row">
+
+    <!-- MOBILE TOP BAR HEADER -->
+    <header class="md:hidden bg-white border-b border-slate-200 h-16 px-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <div class="flex items-center space-x-3">
+            <button onclick="toggleMobileMenu()" class="text-slate-700 hover:text-amber-500 focus:outline-none p-1">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+            <div class="bg-white px-2 py-1 rounded shadow-sm border border-slate-100 flex items-center">
+                <img src="./main logo.png" alt="Logo" class="h-6 object-contain" onerror="this.src='https://via.placeholder.com/100x30?text=Aura'">
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <span class="text-[10px] font-bold bg-slate-900 text-amber-400 px-2 py-0.5 rounded">CLIENT</span>
+            <div class="w-8 h-8 rounded-full bg-amber-400 text-slate-900 font-bold flex items-center justify-center text-xs" id="mobileTopbarInitials">U</div>
+        </div>
+    </header>
+
+    <!-- MOBILE SIDEBAR OVERLAY -->
+    <div id="mobileSidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity" onclick="toggleMobileMenu()"></div>
+
+    <!-- SIDEBAR (DESKTOP & MOBILE SLIDE-OUT) -->
+    <aside id="adminSidebar" class="w-72 bg-[#0b1329] text-slate-300 fixed inset-y-0 left-0 z-50 transform -translate-x-full md:translate-x-0 md:static transition-transform duration-300 ease-in-out flex flex-col justify-between border-r border-slate-800 shadow-xl">
+        <div>
+            <!-- Custom Logo Area with White Background Box -->
+            <div class="p-5 border-b border-white/10 flex items-center justify-center bg-white">
+                <a href="./index.html">
+                <img src="./main logo.webp" alt="Aura Estates Logo" class="h-9 object-contain" onerror="this.src='https://via.placeholder.com/150x40?text=Aura+Estates'"></a>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="p-4 space-y-1.5 text-xs font-medium">
+                <button onclick="switchSection('overview')" id="nav-overview" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-white/10 text-white font-semibold transition shadow-sm">
+                    <i class="fa-solid fa-chart-pie w-5 text-amber-400"></i> <span>1. Overview Dashboard</span>
+                </button>
+                <button onclick="switchSection('portfolio')" id="nav-portfolio" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-building-columns w-5 text-slate-400"></i> <span>2. Asset Portfolio</span>
+                </button>
+                <button onclick="switchSection('reserves')" id="nav-reserves" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-gem w-5 text-slate-400"></i> <span>3. Off-Market Reserves</span>
+                </button>
+                <button onclick="switchSection('financials')" id="nav-financials" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-credit-card w-5 text-slate-400"></i> <span>4. Financials &amp; Escrow</span>
+                </button>
+                <button onclick="switchSection('valuations')" id="nav-valuations" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-chart-line w-5 text-slate-400"></i> <span>5. Institutional Valuations</span>
+                </button>
+                <button onclick="switchSection('concierge')" id="nav-concierge" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-bell-concierge w-5 text-slate-400"></i> <span>6. Private Concierge</span>
+                </button>
+                <button onclick="switchSection('vault')" id="nav-vault" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-folder-closed w-5 text-slate-400"></i> <span>7. Vault &amp; Deeds</span>
+                </button>
+                <button onclick="switchSection('settings')" id="nav-settings" class="w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition">
+                    <i class="fa-solid fa-gear w-5 text-slate-400"></i> <span>8. Account Settings</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- User Profile Footer Box -->
+        <div class="p-4 border-t border-white/10 bg-slate-950/40">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-9 h-9 rounded-full bg-amber-400 text-slate-900 font-extrabold flex items-center justify-center text-xs" id="sidebarInitials">U</div>
+                <div class="overflow-hidden">
+                    <p id="sidebarUserName" class="text-white font-bold truncate text-xs">User</p>
+                    <p id="sidebarUserEmail" class="text-slate-400 truncate text-[10px]">email@gmail.com</p>
+                </div>
+            </div>
+            <button onclick="logout()" class="w-full border border-slate-700 hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-400 text-slate-300 py-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <main class="flex-1 flex flex-col min-h-screen overflow-x-hidden">
+        <!-- Desktop Top Bar Header -->
+        <header class="hidden md:flex bg-white border-b border-slate-200 h-20 px-6 lg:px-10 items-center justify-between sticky top-0 z-20 shadow-sm">
+            <div class="flex items-center space-x-4">
+                <div>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Active Client Panel</span>
+                    <h1 class="text-lg sm:text-xl font-extrabold text-slate-900" id="headerTitle">Overview Dashboard</h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="relative hidden sm:block">
+                    <input type="text" placeholder="Search estates, deeds..." class="bg-slate-100 text-xs rounded-xl px-4 py-2 pl-9 border border-slate-200 focus:outline-none focus:border-slate-400 w-64">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                </div>
+                <div class="flex items-center space-x-3 bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-2xl shadow-sm">
+                    <div class="w-8 h-8 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center text-xs" id="topbarInitials">U</div>
+                    <div class="text-left">
+                        <p id="headerCardName" class="text-xs font-bold text-slate-900 leading-tight">User</p>
+                        <p id="headerCardEmail" class="text-[10px] text-slate-500 leading-tight font-medium">email@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Container where different layouts load -->
+        <div class="p-4 sm:p-6 lg:p-10 space-y-6 max-w-[1500px] w-full mx-auto" id="dynamicContentContainer"></div>
+    </main>
+
+    <script>
+        // Fetch User Data from LocalStorage
+        const userEmail = localStorage.getItem('userEmail') || 'user@gmail.com';
+        const rawNamePart = userEmail.split('@')[0];
+        const displayName = rawNamePart.charAt(0).toUpperCase() + rawNamePart.slice(1);
+        const initials = displayName.charAt(0).toUpperCase();
+
+        // Bind Data Globally
+        document.getElementById('sidebarUserName').textContent = displayName;
+        document.getElementById('sidebarUserEmail').textContent = userEmail;
+        document.getElementById('headerCardName').textContent = displayName;
+        document.getElementById('headerCardEmail').textContent = userEmail;
+        document.getElementById('sidebarInitials').textContent = initials;
+        document.getElementById('topbarInitials').textContent = initials;
+        document.getElementById('mobileTopbarInitials').textContent = initials;
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        function redirectTo404() {
+            window.location.href = '404.html';
+        }
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('adminSidebar');
+            const overlay = document.getElementById('mobileSidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Distinct Views for Each Section (All right-side buttons link to 404.html)
+        const views = {
+            overview: `
+                <div class="bg-gradient-to-r from-slate-900 via-[#0b1329] to-slate-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
+                    <div class="absolute right-0 top-0 bottom-0 w-1/3 bg-cover opacity-10 mix-blend-overlay" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80')"></div>
+                    <div class="relative z-10">
+                        <span class="bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] tracking-widest font-extrabold px-3 py-1 rounded-full uppercase">✦ Verified Institutional Member</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold mt-3">Welcome back, <span class="text-amber-400">${displayName}</span></h2>
+                        <p class="text-xs text-slate-300 mt-1.5">Secure session linked with <span class="text-white font-semibold">${userEmail}</span>. Your private wealth matrix is fully updated.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-3 relative z-10">
+                        <button onclick="redirectTo404()" class="bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold px-5 py-3 rounded-xl text-xs transition shadow-lg">Explore Reserves</button>
+                        <button onclick="redirectTo404()" class="bg-white/10 hover:bg-white/20 text-white font-bold px-5 py-3 rounded-xl text-xs transition border border-white/20">Book Concierge</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Portfolio Valuation</p>
+                                <h3 class="text-2xl font-extrabold text-slate-900 mt-1 font-serif">$14,850,000</h3>
+                            </div>
+                            <div class="bg-emerald-50 text-emerald-600 p-3 rounded-xl"><i class="fa-solid fa-wallet text-base"></i></div>
+                        </div>
+                        <p class="text-[11px] text-emerald-600 font-bold mt-3 flex items-center gap-1"><i class="fa-solid fa-arrow-trend-up"></i> +12.4% vs last quarter</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Active Escrow Reserves</p>
+                                <h3 class="text-2xl font-extrabold text-slate-900 mt-1 font-serif">$3,200,000</h3>
+                            </div>
+                            <div class="bg-blue-50 text-blue-600 p-3 rounded-xl"><i class="fa-solid fa-file-invoice-dollar text-base"></i></div>
+                        </div>
+                        <p class="text-[11px] text-blue-600 font-bold mt-3 flex items-center gap-1"><i class="fa-solid fa-shield-halved"></i> 2 Escrows in Progress</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Off-Market Invites</p>
+                                <h3 class="text-2xl font-extrabold text-slate-900 mt-1 font-serif">8 Estates</h3>
+                            </div>
+                            <div class="bg-amber-50 text-amber-600 p-3 rounded-xl"><i class="fa-solid fa-gem text-base"></i></div>
+                        </div>
+                        <p class="text-[11px] text-amber-600 font-bold mt-3 flex items-center gap-1"><i class="fa-solid fa-star"></i> Exclusive Access Tier</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Collection Traffic</p>
+                                <h3 class="text-2xl font-extrabold text-slate-900 mt-1 font-serif">48.5K</h3>
+                            </div>
+                            <div class="bg-purple-50 text-purple-600 p-3 rounded-xl"><i class="fa-solid fa-chart-line text-base"></i></div>
+                        </div>
+                        <p class="text-[11px] text-purple-600 font-bold mt-3 flex items-center gap-1"><i class="fa-solid fa-bolt"></i> +28% surge this month</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-sm font-bold text-slate-900">Quarterly Asset Appreciation Index</h4>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-lg font-semibold">2026 Fiscal Year</span>
+                        </div>
+                        <div class="relative h-72 w-full"><canvas id="overviewMainChart"></canvas></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 mb-2">Assigned Concierge</h4>
+                            <p class="text-xs text-slate-500 mb-4">Your direct point of contact for private acquisitions.</p>
+                            <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 mb-4">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Agent" class="w-12 h-12 rounded-full object-cover border border-amber-400">
+                                <div>
+                                    <h5 class="text-xs font-bold text-slate-900">Victoria St. Claire</h5>
+                                    <p class="text-[10px] text-slate-500">Managing Senior Broker</p>
+                                    <p class="text-[10px] text-emerald-600 font-semibold mt-0.5">● Online &amp; Available</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="redirectTo404()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-xs transition">Schedule Private Call</button>
+                    </div>
+                </div>
+            `,
+
+         portfolio: `
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2">
+                    <div>
+                        <h2 class="text-xl font-extrabold text-slate-900">Active Asset Portfolio</h2>
+                        <p class="text-xs text-slate-500">Detailed holdings and architectural properties owned by ${displayName}</p>
+                    </div>
+                    <button onclick="redirectTo404()" class="bg-slate-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow hover:bg-slate-800 transition">+ Add New Asset</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
+                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80" class="h-48 w-full object-cover">
+                        <div class="p-5 space-y-3">
+                            <span class="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase">Prime Acquisition</span>
+                            <h3 class="text-base font-extrabold text-slate-900">Pacific Palisades Coastal Estate</h3>
+                            <p class="text-xs text-slate-500"><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> Los Angeles, California</p>
+                            <div class="flex justify-between pt-3 border-t border-slate-100 text-xs">
+                                <span class="text-slate-400 font-semibold">Valuation: <strong class="text-slate-900 font-serif">$6,800,000</strong></span>
+                                <span class="text-emerald-600 font-bold">+8.2% YoY</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" class="h-48 w-full object-cover">
+                        <div class="p-5 space-y-3">
+                            <span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase">Penthouse Reserve</span>
+                            <h3 class="text-base font-extrabold text-slate-900">Manhattan Sky Tower Residence</h3>
+                            <p class="text-xs text-slate-500"><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> New York, NY</p>
+                            <div class="flex justify-between pt-3 border-t border-slate-100 text-xs">
+                                <span class="text-slate-400 font-semibold">Valuation: <strong class="text-slate-900 font-serif">$4,950,000</strong></span>
+                                <span class="text-emerald-600 font-bold">+5.4% YoY</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
+                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80" class="h-48 w-full object-cover">
+                        <div class="p-5 space-y-3">
+                            <span class="bg-amber-50 text-amber-700 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase">Alpine Reserve</span>
+                            <h3 class="text-base font-extrabold text-slate-900">Aspen Modern Mountain Chalet</h3>
+                            <p class="text-xs text-slate-500"><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i> Aspen, Colorado</p>
+                            <div class="flex justify-between pt-3 border-t border-slate-100 text-xs">
+                                <span class="text-slate-400 font-semibold">Valuation: <strong class="text-slate-900 font-serif">$3,100,000</strong></span>
+                                <span class="text-emerald-600 font-bold">+11.1% YoY</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mt-6">
+                    <h4 class="text-sm font-bold text-slate-900 mb-4">Portfolio Growth Trajectory</h4>
+                    <div class="relative h-64 w-full"><canvas id="portfolioGraph"></canvas></div>
+                </div>
+            `,
+
+           reserves: `
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <span class="text-amber-700 font-bold text-xs uppercase tracking-wider">✦ Confidential Off-Market Access</span>
+                        <h2 class="text-xl font-extrabold text-slate-900 mt-1">Exclusive Reserves for ${displayName}</h2>
+                        <p class="text-xs text-slate-600 mt-1">These properties are unlisted publicly and require tier-one buyer verification.</p>
+                    </div>
+                    <div class="bg-white px-4 py-2 rounded-xl border border-amber-200 text-xs font-bold text-slate-800 shadow-sm truncate max-w-full">
+                        Linked Account: ${userEmail}
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col sm:flex-row">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=500&q=80" class="sm:w-1/2 h-56 object-cover">
+                        <div class="p-6 flex flex-col justify-between sm:w-1/2">
+                            <div>
+                                <span class="bg-slate-900 text-amber-400 text-[9px] font-bold px-2 py-0.5 rounded uppercase">Ultra-Private</span>
+                                <h3 class="text-base font-extrabold text-slate-900 mt-2">The Glass Pavilion Estate</h3>
+                                <p class="text-xs text-slate-500 mt-1">Malibu Bluffs, CA</p>
+                                <p class="text-lg font-serif font-bold text-slate-900 mt-3">$12,500,000</p>
+                            </div>
+                            <button onclick="redirectTo404()" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold transition">Request Private Tour</button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col sm:flex-row">
+                        <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=500&q=80" class="sm:w-1/2 h-56 object-cover">
+                        <div class="p-6 flex flex-col justify-between sm:w-1/2">
+                            <div>
+                                <span class="bg-slate-900 text-amber-400 text-[9px] font-bold px-2 py-0.5 rounded uppercase">Architectural Masterpiece</span>
+                                <h3 class="text-base font-extrabold text-slate-900 mt-2">Bel-Air Sanctuary Villa</h3>
+                                <p class="text-xs text-slate-500 mt-1">Bel-Air, Los Angeles</p>
+                                <p class="text-lg font-serif font-bold text-slate-900 mt-3">$18,200,000</p>
+                            </div>
+                            <button onclick="redirectTo404()" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl text-xs font-bold transition">Request Private Tour</button>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            financials: `
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 class="text-lg font-extrabold text-slate-900 mb-1">Financials &amp; Escrow Ledger</h2>
+                    <p class="text-xs text-slate-500 mb-6">Transparent transaction history and active escrow deposits.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <p class="text-[10px] uppercase font-bold text-slate-400">Total Escrow Deposited</p>
+                            <h4 class="text-xl font-extrabold text-slate-900 mt-1 font-serif">$3,200,000</h4>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <p class="text-[10px] uppercase font-bold text-slate-400">Pending Wire Transfers</p>
+                            <h4 class="text-xl font-extrabold text-slate-900 mt-1 font-serif">$0.00</h4>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <p class="text-[10px] uppercase font-bold text-slate-400">Escrow Institution</p>
+                            <h4 class="text-sm font-bold text-slate-900 mt-2">JPMorgan Private Vault</h4>
+                        </div>
+                    </div>
+                    <div class="relative h-64 w-full"><canvas id="financialGraph"></canvas></div>
+                </div>
+            `,
+
+            valuations: `
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 class="text-lg font-extrabold text-slate-900 mb-1">Institutional Valuations</h2>
+                    <p class="text-xs text-slate-500 mb-6">Certified appraisal reports generated for ${displayName} (${userEmail}).</p>
+                    <div class="space-y-3">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900">Pacific Palisades Coastal Estate - Q2 Appraisal</h4>
+                                <p class="text-[11px] text-slate-500">Certified by Standard &amp; Poor's Real Estate Index</p>
+                            </div>
+                            <button onclick="redirectTo404()" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-semibold transition w-full sm:w-auto text-center">Download PDF</button>
+                        </div>
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900">Manhattan Sky Tower Residence - Mid-Year Audit</h4>
+                                <p class="text-[11px] text-slate-500">Certified by Knight Frank Global Valuations</p>
+                            </div>
+                            <button onclick="redirectTo404()" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-semibold transition w-full sm:w-auto text-center">Download PDF</button>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            concierge: `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm lg:col-span-2">
+                        <h2 class="text-lg font-extrabold text-slate-900 mb-1">Private Concierge Activity</h2>
+                        <p class="text-xs text-slate-500 mb-6">Overview of your private showings, offers, and consultations.</p>
+                        <div class="relative h-64 w-full"><canvas id="conciergeChart"></canvas></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900 mb-2">Book a Direct Consultation</h3>
+                            <p class="text-xs text-slate-500 mb-4">Request a secure video meeting with your personal real estate concierge.</p>
+                            <form onsubmit="event.preventDefault(); redirectTo404();" class="space-y-3 text-xs">
+                                <div>
+                                    <label class="block font-bold text-slate-700 mb-1">Preferred Date</label>
+                                    <input type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium" required>
+                                </div>
+                                <div>
+                                    <label class="block font-bold text-slate-700 mb-1">Topic / Property Inquiry</label>
+                                    <input type="text" placeholder="e.g., Malibu Estate Tour" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-medium" required>
+                                </div>
+                                <button type="submit" class="w-full bg-amber-400 hover:bg-amber-500 text-slate-900 font-bold py-3 rounded-xl transition shadow">Confirm Request</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            vault: `
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h2 class="text-lg font-extrabold text-slate-900 mb-1">Digital Vault &amp; Legal Deeds</h2>
+                    <p class="text-xs text-slate-500 mb-6">Encrypted cloud repository containing original property titles for ${displayName} (${userEmail}).</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-file-pdf text-red-500 text-xl"></i>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900">Deed_Palisades.pdf</h4>
+                                    <p class="text-[10px] text-slate-400">2.4 MB • Encrypted</p>
+                                </div>
+                            </div>
+                            <button onclick="redirectTo404()" class="text-slate-600 hover:text-slate-900 p-2"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-file-pdf text-red-500 text-xl"></i>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900">Title_Manhattan.pdf</h4>
+                                    <p class="text-[10px] text-slate-400">1.8 MB • Encrypted</p>
+                                </div>
+                            </div>
+                            <button onclick="redirectTo404()" class="text-slate-600 hover:text-slate-900 p-2"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-file-pdf text-red-500 text-xl"></i>
+                                <div>
+                                    <h4 class="text-xs font-bold text-slate-900">Escrow_Aspen.pdf</h4>
+                                    <p class="text-[10px] text-slate-400">3.1 MB • Encrypted</p>
+                                </div>
+                            </div>
+                            <button onclick="redirectTo404()" class="text-slate-600 hover:text-slate-900 p-2"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `,
+
+            settings: `
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-2xl">
+                    <h2 class="text-lg font-extrabold text-slate-900 mb-1">Account Security Settings</h2>
+                    <p class="text-xs text-slate-500 mb-6">Manage your authenticated session credentials.</p>
+                    <form onsubmit="event.preventDefault(); redirectTo404();" class="space-y-4 text-xs">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Display Name</label>
+                            <input type="text" value="${displayName}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-medium">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Secure Email (Primary ID)</label>
+                            <input type="text" disabled value="${userEmail}" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 font-medium text-slate-500 cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">New Password (Min 8 chars, 1 number, 1 special char)</label>
+                            <input type="password" placeholder="••••••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-medium">
+                        </div>
+                        <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl transition shadow">Save Changes</button>
+                    </form>
+                </div>
+            `
+        };
+
+        function switchSection(sectionKey) {
+            // Update Sidebar Active Styles
+            document.querySelectorAll('aside nav button').forEach(btn => {
+                btn.className = "w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl hover:bg-white/5 hover:text-white transition";
+                const icon = btn.querySelector('i');
+                if(icon) icon.className = icon.className.replace('text-amber-400', 'text-slate-400');
+            });
+
+            const activeBtn = document.getElementById('nav-' + sectionKey);
+            activeBtn.className = "w-full text-left flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-white/10 text-white font-semibold transition shadow-sm";
+            const activeIcon = activeBtn.querySelector('i');
+            if(activeIcon) activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-amber-400');
+
+            // Render Content & Title
+            document.getElementById('dynamicContentContainer').innerHTML = views[sectionKey];
+            
+            // Close mobile menu if open
+            if(window.innerWidth < 768) {
+                toggleMobileMenu();
+            }
+
+            
+            // Initialize Charts based on section
+            setTimeout(() => {
+                if (sectionKey === 'overview') initChart('overviewMainChart', 'line', [12, 13.1, 14, 14.85], ['Q1', 'Q2', 'Q3', 'Q4']);
+                if (sectionKey === 'portfolio') initChart('portfolioGraph', 'line', [12, 13.1, 14, 14.85], ['Q1', 'Q2', 'Q3', 'Q4']);
+                if (sectionKey === 'financials') initChart('financialGraph', 'bar', [2.1, 2.8, 3.2, 3.5], ['Q1', 'Q2', 'Q3', 'Q4']);
+                if (sectionKey === 'concierge') initChart('conciergeChart', 'doughnut', [4, 2, 1], ['Showings', 'Offers', 'Consults']);
+            }, 50);
+        }
+
+        function initChart(canvasId, type, dataValues, labels) {
+            const el = document.getElementById(canvasId);
+            if(!el) return;
+            new Chart(el.getContext('2d'), {
+                type: type,
+                data: { 
+                    labels: labels, 
+                    datasets: [{ 
+                        data: dataValues, 
+                        backgroundColor: type === 'doughnut' ? ['#0f172a', '#10b981', '#f59e0b'] : '#0f172a',
+                        borderColor: '#0f172a',
+                        borderWidth: 2,
+                        borderRadius: type === 'bar' ? 6 : 0
+                    }] 
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        // Default Load Overview
+        switchSection('overview');
+    </script>
+</body>
+</html>

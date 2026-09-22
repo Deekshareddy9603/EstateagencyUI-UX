@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stackly - Real Estate Agency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-900 bg-white selection:bg-slate-900 selection:text-white pt-20">
+
+<!-- Navbar Container (Fixed at top so it never scrolls away on both desktop & mobile) -->
+<header class="w-full bg-white border-b border-gray-100/80 fixed top-0 inset-x-0 z-50 shadow-sm">
+    <div class="max-w-[1460px] mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+        <!-- Logo Slot (Single big logo instance) -->
+        <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="location.href='./index.html'">
+            <div class="h-10 sm:h-12 flex items-center">
+                 <a href="./index.html">
+                <img src="./main logo.webp" alt="Stackly Logo" class="h-9 sm:h-11 w-auto object-contain hidden" id="custom-logo-img" onload="this.classList.remove('hidden'); document.getElementById('fallback-logo').classList.add('hidden');"></a>
+                <!-- Fallback Logo shown until image path is set/loaded -->
+                <div id="fallback-logo" class="flex items-center space-x-2">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#081628] flex items-center justify-center text-white font-bold shadow-sm">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <span class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">STACKLY</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Links (Desktop) -->
+        <nav class="hidden lg:flex items-center space-x-8 text-[15px] font-medium text-slate-600">
+            <a href="./index.html" class="hover:text-slate-900 transition-colors">Home</a>
+            <a href="./properties.html" class="hover:text-slate-900 transition-colors">Properties</a>
+             <a href="./buy.html" class="text-slate-900 font-semibold transition-colors">Buy</a>
+            <a href="./rent.html" class="hover:text-slate-900 transition-colors">Rent</a>
+            <a href="./sell.html" class="hover:text-slate-900 transition-colors">Sell</a>
+            <a href="./about.html" class="hover:text-slate-900 transition-colors">About Us</a>
+            <a href="./contact.html" class="hover:text-slate-900 transition-colors">Contact</a>
+        </nav>
+
+        <!-- Right Actions (Desktop) -->
+        <div class="hidden lg:flex items-center space-x-6 shrink-0">
+            <a href="login.html" class="text-[15px] font-medium text-slate-700 hover:text-slate-900 transition-colors">
+                Login
+            </a>
+            <a href="./postproperty.html" class="bg-[#081628] hover:bg-[#0c2340] text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg shadow-sm transition-all transform active:scale-95 inline-block">
+                + Post Property
+            </a>
+        </div>
+
+        <!-- Single Mobile Toggle Slot (Same position for 3-lines / Close button, zero overlap) -->
+        <div class="flex items-center lg:hidden shrink-0">
+            <button onclick="toggleMobileMenu()" id="mobile-menu-btn" aria-label="Toggle menu" class="text-slate-800 p-2 rounded-lg focus:outline-none hover:bg-slate-100 transition-colors">
+                <svg id="menu-icon-open" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <svg id="menu-icon-close" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Full Screen Mobile Drawer / Overlay (Clean layout, zero label noise, zero overflow) -->
+    <div id="mobile-menu" class="fixed inset-x-0 top-20 bottom-0 bg-white z-50 hidden flex-col justify-between overflow-y-auto lg:hidden">
+        <!-- Navigation Links List -->
+        <div class="px-6 py-6">
+            <nav class="flex flex-col space-y-1 text-lg font-semibold text-slate-800">
+                                <a href="./index.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Home</a>
+                <a href="./properties.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Properties</a>
+
+                <a href="./buy.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-900 border-b border-gray-100">Buy</a>
+                <a href="./rent.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Rent</a>
+                <a href="./sell.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Sell</a>
+                <a href="./about.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">About Us</a>
+                <a href="./contact.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Contact</a>
+            </nav>
+        </div>
+
+        <!-- Bottom Action Buttons inside Drawer -->
+        <div class="p-6 border-t border-gray-100 bg-slate-50 flex flex-col space-y-3">
+            <a href="login.html" class="w-full text-center bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 text-[15px] font-semibold py-3 rounded-xl shadow-sm transition-all block">
+                Login
+            </a>
+            <a href="./postproperty.html" class="w-full text-center bg-[#081628] hover:bg-[#0c2340] text-white text-[15px] font-semibold py-3.5 rounded-xl shadow-md transition-all block">
+                + Post Property
+            </a>
+        </div>
+    </div>
+</header>
+
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const openIcon = document.getElementById('menu-icon-open');
+        const closeIcon = document.getElementById('menu-icon-close');
+        const isHidden = menu.classList.contains('hidden');
+
+        if (isHidden) {
+            menu.classList.remove('hidden');
+            menu.classList.add('flex');
+            openIcon.classList.add('hidden');
+            closeIcon.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } else {
+            menu.classList.add('hidden');
+            menu.classList.remove('flex');
+            openIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+</script>
+
+<!-- HERO / FIND YOUR PERFECT PROPERTY SECTION -->
+<section class="w-full bg-[#082827] text-white pt-16 pb-24 px-4 sm:px-6 lg:px-12 relative">
+    
+    <!-- Main Content Container -->
+    <div class="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
+        
+        <!-- Left Column: Title & Subtitle -->
+        <div class="lg:col-span-7">
+            <div class="text-[#00df81] text-xs font-bold tracking-widest uppercase mb-3">
+                BUY PROPERTIES
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+                Find Your <span class="text-[#00df81]">Perfect</span> 
+                <p>Property</p>
+            </h1>
+            <p class="text-slate-300 text-base sm:text-lg max-w-xl font-normal leading-relaxed">
+                Explore premium homes, apartments, villas and investment properties across the best locations.
+            </p>
+        </div>
+
+        <!-- Right Column: Image Placeholder (Add your image here) -->
+        <div class="lg:col-span-5">
+            <div class="rounded-2xl overflow-hidden ">
+                <img src="./Overlay+Border+Shadow.webp" alt="Luxury Villa Property" class="w-full h-[380px] sm:h-[380px] object-cover">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Floating Search Filter Bar -->
+    <div class="max-w-[1440px] mx-auto relative z-20">
+        <form id="heroSearchForm" onsubmit="handlePropertySearch(event)" class="bg-white text-slate-900 rounded-2xl p-4 sm:p-5 shadow-2xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-center">
+            
+            <!-- 1. Location Input -->
+            <div class="border border-slate-200 rounded-xl p-3 bg-slate-50/50 hover:border-slate-300 transition-all flex items-center space-x-3">
+                <img src="./a (4).webp" alt="Location Icon" class="w-5 h-5 object-contain flex-shrink-0">
+                <div class="w-full">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Location</label>
+                    <input 
+                        type="text" 
+                        id="searchLocation" 
+                        required 
+                        placeholder="Search by location" 
+                        class="w-full bg-transparent text-sm text-slate-800 focus:outline-none placeholder:text-slate-400"
+                    >
+                </div>
+            </div>
+
+            <!-- 2. Property Type Select -->
+            <div class="border border-slate-200 rounded-xl p-3 bg-slate-50/50 hover:border-slate-300 transition-all flex items-center space-x-3">
+                <img src="./a (3).webp" alt="Property Type Icon" class="w-5 h-5 object-contain flex-shrink-0">
+                <div class="w-full">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Property Type</label>
+                    <select 
+                        id="searchPropertyType" 
+                        required 
+                        class="w-full bg-transparent text-sm text-slate-800 focus:outline-none cursor-pointer"
+                    >
+                        <option value="" disabled selected>All Types</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="villa">Villa</option>
+                        <option value="plot">Plot / Land</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 3. Budget Select -->
+            <div class="border border-slate-200 rounded-xl p-3 bg-slate-50/50 hover:border-slate-300 transition-all flex items-center space-x-3">
+                <img src="./a (2).webp" alt="Budget Icon" class="w-5 h-5 object-contain flex-shrink-0">
+                <div class="w-full">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Budget</label>
+                    <select 
+                        id="searchBudget" 
+                        required 
+                        class="w-full bg-transparent text-sm text-slate-800 focus:outline-none cursor-pointer"
+                    >
+                        <option value="" disabled selected>Any Budget</option>
+                        <option value="1">Under ₹50 Lac</option>
+                        <option value="2">₹50 Lac - ₹1 Cr</option>
+                        <option value="3">₹1 Cr+</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 4. Bedrooms Select -->
+            <div class="border border-slate-200 rounded-xl p-3 bg-slate-50/50 hover:border-slate-300 transition-all flex items-center space-x-3">
+                <img src="./a (1).webp" alt="Bedrooms Icon" class="w-5 h-5 object-contain flex-shrink-0">
+                <div class="w-full">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Bedrooms</label>
+                    <select 
+                        id="searchBedrooms" 
+                        required 
+                        class="w-full bg-transparent text-sm text-slate-800 focus:outline-none cursor-pointer"
+                    >
+                        <option value="" disabled selected>Any</option>
+                        <option value="1">1 BHK</option>
+                        <option value="2">2 BHK</option>
+                        <option value="3">3 BHK</option>
+                        <option value="4">4+ BHK</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 5. Search Properties Button -->
+            <div>
+                <button 
+                    type="submit" 
+                    class="w-full h-full min-h-[56px] bg-[#082827] hover:bg-teal-950 text-white font-semibold text-sm rounded-xl flex items-center justify-center space-x-2 shadow-md transition-all cursor-pointer"
+                >
+                    <span>🔍</span>
+                    <span>Search Properties</span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</section>
+
+<!-- Script to handle validation and 404 redirection -->
+<script>
+    function handlePropertySearch(event) {
+        event.preventDefault(); // Stop standard form submission
+
+        const location = document.getElementById('searchLocation').value.trim();
+        const propertyType = document.getElementById('searchPropertyType').value;
+        const budget = document.getElementById('searchBudget').value;
+        const bedrooms = document.getElementById('searchBedrooms').value;
+
+        // Check if all fields are filled out correctly
+        if (location !== "" && propertyType !== "" && budget !== "" && bedrooms !== "") {
+            // Redirect to 404 page if everything is filled
+            window.location.href = "404.html";
+        } else {
+            alert("Please fill in all the search details correctly before searching.");
+        }
+    }
+</script>
+
+<!-- COMPLETE PROPERTY LISTINGS & FULL FILTERS PAGE SECTION -->
+<br>
+<br><section class="w-full bg-slate-50 text-slate-900 py-12 px-4 sm:px-6 lg:px-12">
+    <div class="max-w-[1440px] mx-auto">
+        
+        <!-- Main Layout Grid: Sidebar Filters (Left) + Content (Right) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT COLUMN: FULL FILTERS SIDEBAR (Width: 3 Columns) -->
+            <div class="lg:col-span-3">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 sticky top-6 space-y-6">
+                    
+                    <!-- Filters Header -->
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                        <h3 class="font-bold text-base text-slate-900">Filters</h3>
+                        <!-- Drop your Filter settings icon here -->
+                        <img src="./a.webp" alt="Filter Icon" class="w-4 h-4 object-contain">
+                    </div>
+
+                    <!-- 1. Location Filter -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2">
+                            <img src="./a (4).webp" alt="Location" class="w-3.5 h-3.5 object-contain">
+                            <label class="text-[11px] font-bold text-slate-700 tracking-tight">Location</label>
+                        </div>
+                        <div class="relative">
+                            <select class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-600 focus:outline-none appearance-none cursor-pointer">
+                                <option value="" disabled selected>Select Location</option>
+                                <option value="bengaluru">Bengaluru</option>
+                                <option value="hyderabad">Hyderabad</option>
+                                <option value="chennai">Chennai</option>
+                                <option value="mumbai">Mumbai</option>
+                            </select>
+                            <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-sm font-light">⌄</div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Buy / Rent -->
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <img src="./shake.webp" alt="Buy/Rent" class="w-3.5 h-3.5 object-contain">
+                            <label class="text-[11px] font-bold text-slate-700 tracking-tight">Buy / Rent</label>
+                        </div>
+                        <div class="flex items-center space-x-6 text-xs text-slate-800 pt-0.5">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="buyRent" checked class="w-4 h-4 accent-[#0d3b3f]">
+                                <span>Buy</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="buyRent" class="w-4 h-4 accent-[#0d3b3f]">
+                                <span>Rent</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 3. Property Type -->
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <img src="./prop.webp" alt="Property Type" class="w-3.5 h-3.5 object-contain">
+                            <label class="text-[11px] font-bold text-slate-700 tracking-tight">Property Type</label>
+                        </div>
+                        <div class="space-y-2 text-xs text-slate-700 pt-0.5">
+                            <label class="flex items-center space-x-2.5 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-300 accent-[#0d3b3f]">
+                                <span>House</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-300 accent-[#0d3b3f]">
+                                <span>Apartment</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 accent-[#0d3b3f]">
+                                <span>Villa</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-300 accent-[#0d3b3f]">
+                                <span>Plot</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-300 accent-[#0d3b3f]">
+                                <span>Commercial</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 4. Price Range -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2">
+                            <img src="./a (2).webp" alt="Price" class="w-3.5 h-3.5 object-contain">
+                            <label class="text-[11px] font-bold text-slate-700 tracking-tight">Price Range</label>
+                        </div>
+                        <div class="relative">
+                            <select class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-600 focus:outline-none appearance-none cursor-pointer">
+                                <option value="">Any Price</option>
+                                <option value="1">Under ₹50 Lakhs</option>
+                                <option value="2">₹50L – ₹1 Crore</option>
+                                <option value="3">₹1 Cr – ₹3 Crore</option>
+                                <option value="4">₹3 Crore+</option>
+                            </select>
+                            <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-sm font-light">⌄</div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Bedrooms -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2">
+                            <img src="./bed.webp" alt="Bedrooms" class="w-3.5 h-3.5 object-contain">
+                            <label class="text-[11px] font-bold text-slate-700 tracking-tight">Bedrooms</label>
+                        </div>
+                        <div class="relative">
+                            <select class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-600 focus:outline-none appearance-none cursor-pointer">
+                                <option value="">Any</option>
+                                <option value="1">1 BHK</option>
+                                <option value="2">2 BHK</option>
+                                <option value="3">3 BHK</option>
+                                <option value="4">4+ BHK</option>
+                            </select>
+                            <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-sm font-light">⌄</div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Bathrooms -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2">
+                            <img src="./bath.webp" alt="Bathrooms" class="w-3.5 h-3.5 object-contain">
+                            <label class="text-[11px] font-bold text-slate-700 tracking-tight">Bathrooms</label>
+                        </div>
+                        <div class="relative">
+                            <select class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-600 focus:outline-none appearance-none cursor-pointer">
+                                <option value="">Any</option>
+                                <option value="1">1+</option>
+                                <option value="2">2+</option>
+                                <option value="3">3+</option>
+                            </select>
+                            <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-sm font-light">⌄</div>
+                        </div>
+                    </div>
+
+                    <!-- 7. Area (sq.ft) -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2">
+                            <img src="./55.webp" alt="Area" class="w-3.5 h-3.5 object-contain">
+                            <label class="text-[11px] font-bold text-slate-700 tracking-tight">Area (sq.ft)</label>
+                        </div>
+                        <div class="relative">
+                            <select class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-600 focus:outline-none appearance-none cursor-pointer">
+                                <option value="">Any</option>
+                                <option value="1">Up to 1,000 sq.ft</option>
+                                <option value="2">1,000 – 2,000 sq.ft</option>
+                                <option value="3">2,000 – 3,500 sq.ft</option>
+                                <option value="4">3,500+ sq.ft</option>
+                            </select>
+                            <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-sm font-light">⌄</div>
+                        </div>
+                    </div>
+
+                    <!-- 8. Furnished Status -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center space-x-2">
+                            <img src="./sofa.webp" alt="Furnished" class="w-3.5 h-3.5 object-contain">
+                            <label class="text-[11px] font-bold text-slate-700 tracking-tight">Furnished</label>
+                        </div>
+                        <div class="relative">
+                            <select class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-600 focus:outline-none appearance-none cursor-pointer">
+                                <option value="">Any</option>
+                                <option value="fully">Fully Furnished</option>
+                                <option value="semi">Semi Furnished</option>
+                                <option value="unfurnished">Unfurnished</option>
+                            </select>
+                            <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-sm font-light">⌄</div>
+                        </div>
+                    </div>
+
+                    <!-- 9. Amenities -->
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <img src="./all.webp" alt="Amenities" class="w-3.5 h-3.5 object-contain">
+                            <label class="text-[11px] font-bold text-slate-700 tracking-tight">Amenities</label>
+                        </div>
+                        <div class="space-y-2 text-xs text-slate-700 pt-0.5">
+                            <label class="flex items-center space-x-2.5 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-300 accent-[#0d3b3f]">
+                                <span>Parking</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-300 accent-[#0d3b3f]">
+                                <span>Gym</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-300 accent-[#0d3b3f]">
+                                <span>Swimming Pool</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-300 accent-[#0d3b3f]">
+                                <span>Garden</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-300 accent-[#0d3b3f]">
+                                <span>Security</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Apply & Reset Buttons -->
+                    <div class="pt-3 space-y-3">
+                        <button onclick="applyFilters()" class="w-full bg-[#0d3b3f] hover:bg-teal-950 text-white font-semibold text-xs py-3.5 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer">
+                            <span class="text-xs">▼</span>
+                            <span>Apply Filters</span>
+                        </button>
+                        <button onclick="resetFilters()" class="w-full text-center text-xs text-slate-500 hover:text-slate-800 font-medium py-1 flex items-center justify-center space-x-1 cursor-pointer">
+                            <span>↻</span>
+                            <span>Reset Filters</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: RESULTS TOP BAR & PROPERTY CARDS (Width: 9 Columns) -->
+            <div class="lg:col-span-9 space-y-6">
+                
+                <!-- TOP BAR ALIGNMENT -->
+                <div class="flex justify-between items-center px-1">
+                    <p class="text-xs text-slate-500 font-medium">
+                        Showing <span class="font-bold text-slate-900">1 – 12</span> of <span class="font-bold text-slate-900">48</span> properties
+                    </p>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-slate-400">Sort by</span>
+                        <select class="bg-transparent text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer">
+                            <option value="newest">Newest First</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Main Grid Cards (First 6 Properties) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Property Card 1 -->
+                    <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+                        <div>
+                            <div class="relative h-48">
+                                <img src="./0 (5).webp" alt="Villa" class="w-full h-full object-cover">
+                                <span class="absolute top-3 left-3 bg-[#0d3b3f] text-white text-[10px] font-bold px-2.5 py-1 rounded-md">Villa</span>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-bold text-slate-900 text-sm mb-1">Luxury 3 BHK Villa</h4>
+                                <p class="text-xs text-slate-500 mb-3 flex items-center space-x-1.5">
+                                    <img src="./a (4).webp" alt="Location" class="w-3 h-3 object-contain inline-block">
+                                    <span>Tirupati</span>
+                                </p>
+                                <div class="text-base font-extrabold text-slate-900 mb-3">₹ 2,50,00,000</div>
+                                <div class="flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-3">
+                                    <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3.5 h-3.5 object-contain"><span>3 Beds</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3.5 h-3.5 object-contain"><span>3 Baths</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3.5 h-3.5 object-contain"><span>2,800 sq ft</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button onclick="redirectTo404()" class="w-full bg-[#0d3b3f] hover:bg-teal-950 text-white text-xs font-semibold py-2.5 rounded-xl transition-all cursor-pointer">
+                                View Details →
+                            </button>
+                        </div>
+                    </div>
+
+                   <!-- Property Card 2 -->
+                    <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+                        <div>
+                            <div class="relative h-48">
+                                <img src="./Modern 2 BHK Apartment.webp" alt="Apartment" class="w-full h-full object-cover">
+                                <span class="absolute top-3 left-3 bg-[#0d3b3f] text-white text-[10px] font-bold px-2.5 py-1 rounded-md">Apartment</span>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-bold text-slate-900 text-sm mb-1">Modern 2 BHK Apartment</h4>
+                                <p class="text-xs text-slate-500 mb-3 flex items-center space-x-1.5">
+                                    <img src="./a (4).webp" alt="Location" class="w-3 h-3 object-contain inline-block">
+                                    <span>Bengaluru</span>
+                                </p>
+                                <div class="text-base font-extrabold text-slate-900 mb-3">₹ 1,20,00,000</div>
+                                <div class="flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-3">
+                                    <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3.5 h-3.5 object-contain"><span>2 Beds</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3.5 h-3.5 object-contain"><span>2 Baths</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3.5 h-3.5 object-contain"><span>1,250 sq ft</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button onclick="redirectTo404()" class="w-full bg-[#0d3b3f] hover:bg-teal-950 text-white text-xs font-semibold py-2.5 rounded-xl transition-all cursor-pointer">
+                                View Details →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Property Card 3 -->
+                    <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+                        <div>
+                            <div class="relative h-48">
+                                <img src="./0 (4).webp" alt="House" class="w-full h-full object-cover">
+                                <span class="absolute top-3 left-3 bg-[#0d3b3f] text-white text-[10px] font-bold px-2.5 py-1 rounded-md">House</span>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-bold text-slate-900 text-sm mb-1">Premium Family Home</h4>
+                                <p class="text-xs text-slate-500 mb-3 flex items-center space-x-1.5">
+                                    <img src="./a (4).webp" alt="Location" class="w-3 h-3 object-contain inline-block">
+                                    <span>Hyderabad</span>
+                                </p>
+                                <div class="text-base font-extrabold text-slate-900 mb-3">₹ 1,80,00,000</div>
+                                <div class="flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-3">
+                                    <span class="flex items-center space-x-1"><img src="" alt="Be./bed" class="w-3.5 h-3.5 object-contain"><span>4 Beds</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3.5 h-3.5 object-contain"><span>3 Baths</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3.5 h-3.5 object-contain"><span>3,200 sq ft</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button onclick="redirectTo404()" class="w-full bg-[#0d3b3f] hover:bg-teal-950 text-white text-xs font-semibold py-2.5 rounded-xl transition-all cursor-pointer">
+                                View Details →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Property Card 4 -->
+                    <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+                        <div>
+                            <div class="relative h-48">
+                                <img src="./0 (3).webp" alt="Plot" class="w-full h-full object-cover">
+                                <span class="absolute top-3 left-3 bg-[#0d3b3f] text-white text-[10px] font-bold px-2.5 py-1 rounded-md">Plot</span>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-bold text-slate-900 text-sm mb-1">Residential Plot</h4>
+                                <p class="text-xs text-slate-500 mb-3 flex items-center space-x-1.5">
+                                    <img src="./a (4).webp" alt="Location" class="w-3 h-3 object-contain inline-block">
+                                    <span>Chennai</span>
+                                </p>
+                                <div class="text-base font-extrabold text-slate-900 mb-3">₹ 75,00,000</div>
+                                 <div class="flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-3">
+                                    <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3.5 h-3.5 object-contain"><span>-</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./bath.webp'" alt="Baths" class="w-3.5 h-3.5 object-contain"><span>-</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3.5 h-3.5 object-contain"><span>1,200 sq ft</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button onclick="redirectTo404()" class="w-full bg-[#0d3b3f] hover:bg-teal-950 text-white text-xs font-semibold py-2.5 rounded-xl transition-all cursor-pointer">
+                                View Details →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Property Card 5 -->
+                    <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+                        <div>
+                            <div class="relative h-48">
+                                <img src="./0 (2).webp" alt="Villa" class="w-full h-full object-cover">
+                                <span class="absolute top-3 left-3 bg-[#0d3b3f] text-white text-[10px] font-bold px-2.5 py-1 rounded-md">Villa</span>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-bold text-slate-900 text-sm mb-1">Luxury 4 BHK Villa</h4>
+                                <p class="text-xs text-slate-500 mb-3 flex items-center space-x-1.5">
+                                    <img src="./a (4).webp" alt="Location" class="w-3 h-3 object-contain inline-block">
+                                    <span>Vijayawada</span>
+                                </p>
+                                <div class="text-base font-extrabold text-slate-900 mb-3">₹ 3,75,00,000</div>
+                                <div class="flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-3">
+                                    <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3.5 h-3.5 object-contain"><span>4 Beds</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3.5 h-3.5 object-contain"><span>4 Baths</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3.5 h-3.5 object-contain"><span>4,500 sq ft</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button onclick="redirectTo404()" class="w-full bg-[#0d3b3f] hover:bg-teal-950 text-white text-xs font-semibold py-2.5 rounded-xl transition-all cursor-pointer">
+                                View Details →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Property Card 6 -->
+                    <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+                        <div>
+                            <div class="relative h-48">
+                                <img src="./0 (1).webp" alt="Apartment" class="w-full h-full object-cover">
+                                <span class="absolute top-3 left-3 bg-[#0d3b3f] text-white text-[10px] font-bold px-2.5 py-1 rounded-md">Apartment</span>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-bold text-slate-900 text-sm mb-1">Modern Apartment</h4>
+                                <p class="text-xs text-slate-500 mb-3 flex items-center space-x-1.5">
+                                    <img src="./0 (4).webp" alt="Location" class="w-3 h-3 object-contain inline-block">
+                                    <span>Visakhapatnam</span>
+                                </p>
+                                <div class="text-base font-extrabold text-slate-900 mb-3">₹ 95,00,000</div>
+                                <div class="flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 pt-3">
+                                    <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3.5 h-3.5 object-contain"><span>2 Beds</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3.5 h-3.5 object-contain"><span>2 Baths</span></span>
+                                    <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3.5 h-3.5 object-contain"><span>1,100 sq ft</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0">
+                            <button onclick="redirectTo404()" class="w-full bg-[#0d3b3f] hover:bg-teal-950 text-white text-xs font-semibold py-2.5 rounded-xl transition-all cursor-pointer">
+                                View Details →
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+<!-- SUB-SECTION 1: FEATURED PROPERTIES -->
+                <div class="pt-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900">Featured Properties</h3>
+                            <p class="text-xs text-slate-500">Handpicked premium properties for you</p>
+                        </div>
+                        <a href="404.html" class="text-xs font-bold text-slate-700 hover:underline">View All →</a>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Featured Card 1 -->
+                        <div onclick="redirectTo404()" class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm cursor-pointer hover:shadow-md transition-all p-3 flex flex-col justify-between">
+                            <div>
+                                <img src="./q (1).webp" alt="Luxury Villa" class="w-full h-36 object-cover rounded-xl mb-3">
+                                <h4 class="font-bold text-xs text-slate-900 mb-0.5">Luxury Villa</h4>
+                                <p class="text-[10px] text-slate-500 mb-2">Tirupati</p>
+                                <div class="text-xs font-extrabold text-slate-900 mb-3">₹ 3,20,00,000</div>
+                            </div>
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 pt-2.5">
+                                <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3 h-3 object-contain"><span>4 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3 h-3 object-contain"><span>4 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3 h-3 object-contain"><span>3,600 sq ft</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Featured Card 2 -->
+                        <div onclick="redirectTo404()" class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm cursor-pointer hover:shadow-md transition-all p-3 flex flex-col justify-between">
+                            <div>
+                                <img src="./q (7).webp" alt="Apartment" class="w-full h-36 object-cover rounded-xl mb-3">
+                                <h4 class="font-bold text-xs text-slate-900 mb-0.5">Apartment</h4>
+                                <p class="text-[10px] text-slate-500 mb-2">Bengaluru</p>
+                                <div class="text-xs font-extrabold text-slate-900 mb-3">₹ 1,60,00,000</div>
+                            </div>
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 pt-2.5">
+                                <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3 h-3 object-contain"><span>2 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3 h-3 object-contain"><span>2 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3 h-3 object-contain"><span>1,900 sq ft</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Featured Card 3 -->
+                        <div onclick="redirectTo404()" class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm cursor-pointer hover:shadow-md transition-all p-3 flex flex-col justify-between">
+                            <div>
+                                <img src="./q (6).webp" alt="Independent House" class="w-full h-36 object-cover rounded-xl mb-3">
+                                <h4 class="font-bold text-xs text-slate-900 mb-0.5">Independent House</h4>
+                                <p class="text-[10px] text-slate-500 mb-2">Hyderabad</p>
+                                <div class="text-xs font-extrabold text-slate-900 mb-3">₹ 2,10,00,000</div>
+                            </div>
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 pt-2.5">
+                                <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3 h-3 object-contain"><span>3 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3 h-3 object-contain"><span>3 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3 h-3 object-contain"><span>2,200 sq ft</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Featured Card 4 -->
+                        <div onclick="redirectTo404()" class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm cursor-pointer hover:shadow-md transition-all p-3 flex flex-col justify-between">
+                            <div>
+                                <img src="./q (5).webp" alt="Villa" class="w-full h-36 object-cover rounded-xl mb-3">
+                                <h4 class="font-bold text-xs text-slate-900 mb-0.5">Villa</h4>
+                                <p class="text-[10px] text-slate-500 mb-2">Chennai</p>
+                                <div class="text-xs font-extrabold text-slate-900 mb-3">₹ 2,80,00,000</div>
+                            </div>
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 pt-2.5">
+                                <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3 h-3 object-contain"><span>4 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3 h-3 object-contain"><span>3 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3 h-3 object-contain"><span>2,700 sq ft</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-SECTION 2: RECENTLY ADDED -->
+                <div class="pt-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900">Recently Added</h3>
+                            <p class="text-xs text-slate-500">New properties on the market</p>
+                        </div>
+                        <a href="404.html" class="text-xs font-bold text-slate-700 hover:underline">View All →</a>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Recent Card 1 -->
+                        <div onclick="redirectTo404()" class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm cursor-pointer hover:shadow-md transition-all p-3 flex flex-col justify-between">
+                            <div>
+                                <img src="./q (4).webp" alt="Apartment" class="w-full h-36 object-cover rounded-xl mb-3">
+                                <h4 class="font-bold text-xs text-slate-900 mb-0.5">Apartment</h4>
+                                <p class="text-[10px] text-slate-500 mb-2">Vijayawada</p>
+                                <div class="text-xs font-extrabold text-slate-900 mb-3">₹ 1,10,00,000</div>
+                            </div>
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 pt-2.5">
+                                <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3 h-3 object-contain"><span>2 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3 h-3 object-contain"><span>2 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3 h-3 object-contain"><span>1,150 sq ft</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Recent Card 2 -->
+                        <div onclick="redirectTo404()" class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm cursor-pointer hover:shadow-md transition-all p-3 flex flex-col justify-between">
+                            <div>
+                                <img src="./q (3).webp" alt="Plot" class="w-full h-36 object-cover rounded-xl mb-3">
+                                <h4 class="font-bold text-xs text-slate-900 mb-0.5">Plot</h4>
+                                <p class="text-[10px] text-slate-500 mb-2">Vizag</p>
+                                <div class="text-xs font-extrabold text-slate-900 mb-3">₹ 60,00,000</div>
+                            </div>
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 pt-2.5">
+                                <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3 h-3 object-contain"><span>- </span></span>
+                                <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3 h-3 object-contain"><span>- </span></span>
+                                <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3 h-3 object-contain"><span>1,000sq ft</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Recent Card 3 -->
+                        <div onclick="redirectTo404()" class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm cursor-pointer hover:shadow-md transition-all p-3 flex flex-col justify-between">
+                            <div>
+                                <img src="./q (2).webp" alt="House" class="w-full h-36 object-cover rounded-xl mb-3">
+                                <h4 class="font-bold text-xs text-slate-900 mb-0.5">House</h4>
+                                <p class="text-[10px] text-slate-500 mb-2">Tirupati</p>
+                                <div class="text-xs font-extrabold text-slate-900 mb-3">₹ 1,45,00,000</div>
+                            </div>
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 pt-2.5">
+                                <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3 h-3 object-contain"><span>3 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3 h-3 object-contain"><span>2 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3 h-3 object-contain"><span>1,800 sq ft</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Recent Card 4 -->
+                        <div onclick="redirectTo404()" class="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm cursor-pointer hover:shadow-md transition-all p-3 flex flex-col justify-between">
+                            <div>
+                                <img src="./q (3).webp" alt="Villa" class="w-full h-36 object-cover rounded-xl mb-3">
+                                <h4 class="font-bold text-xs text-slate-900 mb-0.5">Villa</h4>
+                                <p class="text-[10px] text-slate-500 mb-2">Bengaluru</p>
+                                <div class="text-xs font-extrabold text-slate-900 mb-3">₹ 3,50,00,000</div>
+                            </div>
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-100 pt-2.5">
+                                <span class="flex items-center space-x-1"><img src="./bed.webp" alt="Beds" class="w-3 h-3 object-contain"><span>4 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./bath.webp" alt="Baths" class="w-3 h-3 object-contain"><span>4 </span></span>
+                                <span class="flex items-center space-x-1"><img src="./55.webp" alt="Area" class="w-3 h-3 object-contain"><span>4,000 sq ft</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- Script -->
+<script>
+    function redirectTo404() {
+        window.location.href = "404.html";
+    }
+
+    function applyFilters() {
+        window.location.href = "404.html";
+    }
+
+    function resetFilters() {
+        location.reload();
+    }
+</script>
+<!-- WHY BUY WITH US SECTION (Full Width, No Outer Box, No Icon Background Color) -->
+<section class="w-full bg-white py-14 px-4 sm:px-6 lg:px-12 border-t border-slate-100">
+    <div class="max-w-[1440px] mx-auto">
+        
+        <!-- Section Header -->
+        <div class="mb-10">
+            <h2 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Why Buy With Us?</h2>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Your dream home is just a step away</p>
+        </div>
+
+        <!-- 4-Column Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+            
+            <!-- Feature 1: Trusted & Verified Properties -->
+            <div class="flex items-start space-x-4">
+                <!-- Icon Container (Transparent) -->
+                <div class="w-12 h-12 flex items-center justify-center shrink-0">
+                    <img src="./Background+Shadow.webp" alt="Trusted" class="w-8 h-8 object-contain">
+                </div>
+                <!-- Text Content -->
+                <div class="space-y-1">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900">Trusted & Verified Properties</h4>
+                    <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">100% genuine listings with legal verification.</p>
+                </div>
+            </div>
+
+            <!-- Feature 2: Best Price Guarantee -->
+            <div class="flex items-start space-x-4">
+                <!-- Icon Container (Transparent) -->
+                <div class="w-12 h-12 flex items-center justify-center shrink-0">
+                    <img src="./Background+Shadow (1).webp" alt="Best Price" class="w-8 h-8 object-contain">
+                </div>
+                <!-- Text Content -->
+                <div class="space-y-1">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900">Best Price Guarantee</h4>
+                    <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Get the best deals with transparent pricing.</p>
+                </div>
+            </div>
+
+            <!-- Feature 3: Expert Support -->
+            <div class="flex items-start space-x-4">
+                <!-- Icon Container (Transparent) -->
+                <div class="w-12 h-12 flex items-center justify-center shrink-0">
+                    <img src="./Background+Shadow (2).webp" alt="Expert Support" class="w-8 h-8 object-contain">
+                </div>
+                <!-- Text Content -->
+                <div class="space-y-1">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900">Expert Support</h4>
+                    <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Our team is here to guide you at every step.</p>
+                </div>
+            </div>
+
+            <!-- Feature 4: Secure Transactions -->
+            <div class="flex items-start space-x-4">
+                <!-- Icon Container (Transparent) -->
+                <div class="w-12 h-12 flex items-center justify-center shrink-0">
+                    <img src="./Background+Shadow (3).webp" alt="Secure Transactions" class="w-8 h-8 object-contain">
+                </div>
+                <!-- Text Content -->
+                <div class="space-y-1">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900">Secure Transactions</h4>
+                    <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Safe and hassle-free buying process.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- TRUSTED AGENTS SECTION -->
+<section class="w-full bg-white py-14 px-4 sm:px-6 lg:px-12 border-t border-slate-100">
+    <div class="max-w-[1440px] mx-auto">
+        
+        <!-- Section Header with Title and View All Link -->
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Trusted Agents</h2>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">Work with the best real estate professionals</p>
+            </div>
+            <a href="./404.html" class="text-xs sm:text-sm font-semibold text-slate-900 hover:text-slate-700 flex items-center space-x-1 transition-colors">
+                <span>View All Agents</span>
+                <span class="text-base">&rarr;</span>
+            </a>
+        </div>
+
+        <!-- 4-Column Agent Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <!-- Agent Card 1: Ravi Kumar -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                <!-- Profile Image -->
+                <img src="./Ravi Kumar.webp" alt="Ravi Kumar" class="w-14 h-14 rounded-full object-cover shrink-0">
+                <!-- Details -->
+                <div class="min-w-0">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate">Ravi Kumar</h4>
+                    <p class="text-[11px] text-slate-500 truncate">Property Consultant</p>
+                    <!-- Ratings -->
+                    <div class="flex items-center space-x-1 mt-1.5">
+                        <!-- Single 5-Star Image -->
+                        <img src="./starr.webp" alt="5 Stars" class="h-3 object-contain">
+                        <span class="text-[11px] font-bold text-slate-800 ml-1">4.8</span>
+                        <span class="text-[10px] text-slate-400">(120+ reviews)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Card 2: Sneha Reddy -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                <!-- Profile Image -->
+                <img src="./Sneha Reddy.webp" alt="Sneha Reddy" class="w-14 h-14 rounded-full object-cover shrink-0">
+                <!-- Details -->
+                <div class="min-w-0">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate">Sneha Reddy</h4>
+                    <p class="text-[11px] text-slate-500 truncate">Sales Manager</p>
+                    <!-- Ratings -->
+                    <div class="flex items-center space-x-1 mt-1.5">
+                        <!-- Single 5-Star Image -->
+                        <img src="./starr.webp" alt="5 Stars" class="h-3 object-contain">
+                        <span class="text-[11px] font-bold text-slate-800 ml-1">4.7</span>
+                        <span class="text-[10px] text-slate-400">(98+ reviews)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Card 3: Arjun Patel -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                <!-- Profile Image -->
+                <img src="./Arjun Patel.webp" alt="Arjun Patel" class="w-14 h-14 rounded-full object-cover shrink-0">
+                <!-- Details -->
+                <div class="min-w-0">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate">Arjun Patel</h4>
+                    <p class="text-[11px] text-slate-500 truncate">Property Consultant</p>
+                    <!-- Ratings -->
+                    <div class="flex items-center space-x-1 mt-1.5">
+                        <!-- Single 5-Star Image -->
+                        <img src="./starr.webp" alt="5 Stars" class="h-3 object-contain">
+                        <span class="text-[11px] font-bold text-slate-800 ml-1">4.9</span>
+                        <span class="text-[10px] text-slate-400">(150+ reviews)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Card 4: Priya Sharma -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center space-x-4">
+                <!-- Profile Image -->
+                <img src="./Priya Sharma.webp" alt="Priya Sharma" class="w-14 h-14 rounded-full object-cover shrink-0">
+                <!-- Details -->
+                <div class="min-w-0">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate">Priya Sharma</h4>
+                    <p class="text-[11px] text-slate-500 truncate">Sales Executive</p>
+                    <!-- Ratings -->
+                    <div class="flex items-center space-x-1 mt-1.5">
+                        <!-- Single 5-Star Image -->
+                        <img src="./starr.webp" alt="5 Stars" class="h-3 object-contain">
+                        <span class="text-[11px] font-bold text-slate-800 ml-1">4.8</span>
+                        <span class="text-[10px] text-slate-400">(110+ reviews)</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- FULL-WIDTH CALL TO ACTION BANNER SECTION -->
+<section class="w-full bg-white py-12">
+    <div class="w-full">
+        
+        <!-- Main Banner Container: Full width edge-to-edge with rounded corners on left/right or full bleed -->
+        <div class="relative w-full sm:rounded-[3rem] overflow-hidden bg-[#07111a] shadow-xl min-h-[360px] sm:min-h-[264px] flex items-center">
+            
+            <!-- Background Image & Reduced Dark Tint Overlay -->
+            <div class="absolute inset-0 z-0">
+                <!-- Replace with your background image path -->
+                <img src="./Luxury Architecture.webp" alt="Luxury Home Background" class="w-full h-full object-cover object-center">
+                
+                <!-- Reduced black gradient overlay so background image is more visible -->
+                <div class="absolute inset-0 bg-black/45 sm:bg-gradient-to-r sm:from-black/70 sm:via-black/40 sm:to-transparent"></div>
+            </div>
+
+            <!-- Content Area -->
+            <div class="relative z-10 px-8 sm:px-16 lg:px-24 py-12 max-w-3xl">
+                
+                <!-- Subtitle -->
+                <span class="text-[11px] sm:text-xs font-bold tracking-widest text-emerald-400 uppercase block mb-3">
+                    Ready to Move?
+                </span>
+
+                <!-- Main Heading -->
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mb-3">
+                    Ready to Find Your New Home?
+                </h2>
+
+                <!-- Description -->
+                <p class="text-xs sm:text-sm text-slate-200 leading-relaxed mb-8 max-w-xl">
+                    Let us help you find the perfect property that fits your lifestyle and budget.
+                </p>
+
+                <!-- Call to Action Button -->
+                <a href="./404.html" class="inline-flex items-center justify-center bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs sm:text-sm px-6 py-3.5 rounded-full shadow-md transition-all duration-200 space-x-2 group">
+                    <span>Get Started</span>
+                    <span class="transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<footer class="footer-section" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #0b0f19; color: #94a3b8; width: 100%; box-sizing: border-box; margin: 24px 0 0 0; padding: 64px 48px;">
+  <div style="width: 100%; max-width: 1344px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr; gap: 40px; align-items: start;" class="footer-grid">
+    
+    <!-- Column 1: Home icon image first, Custom logo second + Bio -->
+    <div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; min-height: 46px;">
+        <!-- White Rounded Box with Home Icon Image (First) - Made Slightly Larger -->
+        <a href="./index.html" aria-label="Home" style="width: 46px; height: 46px; border-radius: 14px; background-color: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none; box-sizing: border-box; flex-shrink: 0;">
+          <img src="./footericon.webp" alt="Home Icon" style="width: 24px; height: 24px; object-fit: contain; display: block;" />
+        </a>
+
+        <!-- Replace src with your logo image path (Second) -->
+        <a href="./index.html" style="display: inline-block;">
+          <img src="./footer logo.webp" alt="Company Logo" style="height: 32px; width: auto; object-fit: contain; display: block;" />
+        </a>
+      </div>
+      <p style="font-size: 14px; color: #94a3b8; line-height: 1.6; margin: 0 0 24px 0; max-width: 280px;">
+        Your trusted partner in real estate. We help you find the perfect property for a better tomorrow.
+      </p>
+      
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <!-- Facebook -->
+        <a href="404.html" aria-label="Facebook" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#1877F2'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <!-- Twitter / X -->
+        <a href="404.html" aria-label="Twitter" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#000000'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <!-- Instagram -->
+        <a href="404.html" aria-label="Instagram" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#E4405F'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+        </a>
+        <!-- LinkedIn -->
+        <a href="404.html" aria-label="LinkedIn" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#0A66C2'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <!-- YouTube -->
+        <a href="404.html" aria-label="YouTube" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Column 2: Quick Links -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Quick Links</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="./index.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Home</a></li>
+        <li><a href="./about.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">About Us</a></li>
+        <li><a href="./contact.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Contact</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Privacy Policy</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Terms &amp; Conditions</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 3: Properties -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Properties</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Buy Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Rent Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Sell Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Featured Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">All Properties</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 4: Company -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Company</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Our Team</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Careers</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Blog</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">FAQs</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Testimonials</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 5: Newsletter -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 12px 0;">Newsletter</h3>
+      <p style="font-size: 13.5px; color: #94a3b8; line-height: 1.5; margin: 0 0 16px 0;">
+        Subscribe to get the latest property updates.
+      </p>
+      
+      <form id="stackly-newsletter-form" onsubmit="handleNewsletterSubmit(event)" style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <input 
+          type="email" 
+          id="newsletter-email" 
+          placeholder="Enter your email" 
+          style="flex: 1; min-width: 140px; background-color: #ffffff; color: #0f172a; border: none; border-radius: 8px; padding: 10px 14px; font-size: 13.5px; outline: none; box-sizing: border-box;"
+        />
+        <button 
+          type="submit" 
+          aria-label="Subscribe"
+          style="background-color: #2563eb; color: #ffffff; border: none; border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.2s, transform 0.1s; flex-shrink: 0;"
+          onmouseover="this.style.backgroundColor='#1d4ed8'"
+          onmouseout="this.style.backgroundColor='#2563eb'"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+      <div id="newsletter-error" style="color: #ef4444; font-size: 12px; margin-top: 6px; display: none;">Please enter the email first</div>
+    </div>
+
+  </div>
+
+  <style>
+    @media (max-width: 1024px) {
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+    @media (max-width: 640px) {
+      .footer-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .footer-section {
+        padding: 48px 20px !important;
+      }
+    }
+  </style>
+
+  <script>
+    function handleNewsletterSubmit(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('newsletter-email');
+      const errorMsg = document.getElementById('newsletter-error');
+      const emailVal = emailInput.value.trim();
+
+      if (!emailVal || !emailVal.includes('@')) {
+        errorMsg.style.display = 'block';
+        emailInput.style.border = '1px solid #ef4444';
+        return;
+      }
+      
+      errorMsg.style.display = 'none';
+      emailInput.style.border = 'none';
+      window.location.href = '404.html';
+    }
+  </script>
+</footer>
+
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const openIcon = document.getElementById('menu-icon-open');
+        const closeIcon = document.getElementById('menu-icon-close');
+        
+        if (!menu || !openIcon || !closeIcon) return;
+
+        const isHidden = menu.classList.contains('hidden');
+
+        if (isHidden) {
+            menu.classList.remove('hidden');
+            menu.classList.add('flex');
+            openIcon.classList.add('hidden');
+            closeIcon.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } else {
+            menu.classList.add('hidden');
+            menu.classList.remove('flex');
+            openIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+</script>
+
+</body>
+</html>

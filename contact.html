@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stackly - Real Estate Agency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-slate-900 bg-white selection:bg-slate-900 selection:text-white">
+
+<!-- Navbar Container (Fixed at top so it never scrolls away on both desktop & mobile) -->
+<header class="w-full bg-white border-b border-gray-100/80 fixed top-0 inset-x-0 z-50 shadow-sm">
+    <div class="max-w-[1460px] mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+        <!-- Logo Slot (Single big logo instance) -->
+        <div class="flex items-center space-x-3 cursor-pointer shrink-0" onclick="location.href='./index.html'">
+            <div class="h-10 sm:h-12 flex items-center">
+                <a href="./index.html">
+                <img src="./main logo.webp" alt="Stackly Logo" class="h-9 sm:h-11 w-auto object-contain hidden" id="custom-logo-img" onload="this.classList.remove('hidden'); document.getElementById('fallback-logo').classList.add('hidden');"></a>
+                <!-- Fallback Logo shown until image path is set/loaded -->
+                <div id="fallback-logo" class="flex items-center space-x-2">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#081628] flex items-center justify-center text-white font-bold shadow-sm">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <span class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">STACKLY</span>
+                </div>
+            </div>
+        </div>
+
+       
+        <!-- Navigation Links (Desktop) -->
+        <nav class="hidden lg:flex items-center space-x-8 text-[15px] font-medium text-slate-600">
+            <a href="./index.html" class="hover:text-slate-900 transition-colors">Home</a>
+            <a href="./properties.html" class="hover:text-slate-900 transition-colors">Properties</a>
+            <a href="./buy.html" class="hover:text-slate-900 transition-colors">Buy</a>
+            <a href="./rent.html" class="hover:text-slate-900 transition-colors">Rent</a>
+            <a href="./sell.html" class="hover:text-slate-900 transition-colors">Sell</a>
+            <a href="./about.html" class="hover:text-slate-900 transition-colors">About Us</a>
+            <!-- Active Contact State Applied Below -->
+            <a href="./contact.html" class="text-slate-900 font-semibold transition-colors">Contact</a>
+        </nav>
+
+        <!-- Right Actions (Desktop) -->
+        <div class="hidden lg:flex items-center space-x-6 shrink-0">
+            <a href="login.html" class="text-[15px] font-medium text-slate-700 hover:text-slate-900 transition-colors">
+                Login
+            </a>
+            <a href="./postproperty.html" class="bg-[#081628] hover:bg-[#0c2340] text-white text-[14px] font-semibold px-5 py-2.5 rounded-lg shadow-sm transition-all transform active:scale-95 inline-block">
+                + Post Property
+            </a>
+        </div>
+
+        <!-- Single Mobile Toggle Slot (Same position for 3-lines / Close button, zero overlap) -->
+        <div class="flex items-center lg:hidden shrink-0">
+            <button onclick="toggleMobileMenu()" id="mobile-menu-btn" aria-label="Toggle menu" class="text-slate-800 p-2 rounded-lg focus:outline-none hover:bg-slate-100 transition-colors">
+                <svg id="menu-icon-open" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <svg id="menu-icon-close" class="w-7 h-7 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Full Screen Mobile Drawer / Overlay (Clean layout, zero label noise, zero overflow) -->
+    <div id="mobile-menu" class="fixed inset-x-0 top-20 bottom-0 bg-white z-50 hidden flex-col justify-between overflow-y-auto lg:hidden">
+        <!-- Navigation Links List -->
+        <div class="px-6 py-6">
+            <nav class="flex flex-col space-y-1 text-lg font-semibold text-slate-800">
+                 <a href="./index.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Home</a>
+                <a href="./properties.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Properties</a>
+                <a href="./buy.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Buy</a>
+                <a href="./rent.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Rent</a>
+                <a href="./sell.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">Sell</a>
+                <a href="./about.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-700 hover:text-[#2563eb] border-b border-gray-100 transition-colors">About Us</a>
+                 <a href="./contact.html" onclick="toggleMobileMenu()" class="py-3.5 text-slate-900 border-b border-gray-100">Contact</a>
+            </nav>
+        </div>
+
+        <!-- Bottom Action Buttons inside Drawer -->
+        <div class="p-6 border-t border-gray-100 bg-slate-50 flex flex-col space-y-3">
+            <a href="login.html" class="w-full text-center bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 text-[15px] font-semibold py-3 rounded-xl shadow-sm transition-all block">
+                Login
+            </a>
+            <a href="./postproperty.html" class="w-full text-center bg-[#081628] hover:bg-[#0c2340] text-white text-[15px] font-semibold py-3.5 rounded-xl shadow-md transition-all block">
+                + Post Property
+            </a>
+        </div>
+    </div>
+</header>
+
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const openIcon = document.getElementById('menu-icon-open');
+        const closeIcon = document.getElementById('menu-icon-close');
+        const isHidden = menu.classList.contains('hidden');
+
+        if (isHidden) {
+            menu.classList.remove('hidden');
+            menu.classList.add('flex');
+            openIcon.classList.add('hidden');
+            closeIcon.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } else {
+            menu.classList.add('hidden');
+            menu.classList.remove('flex');
+            openIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+</script>
+
+       
+<!-- CONTACT & PROPERTY ADVISORY SECTION (ICONS WITHOUT BOXES) -->
+<section class="w-full relative bg-[#fcfbf9] pb-20">
+    
+    <!-- Expanded Hero Section with Background Image -->
+    <div class="w-full relative bg-[#121c2b] pt-32 pb-56 lg:pt-40 lg:pb-64 px-4 sm:px-6 lg:px-12 overflow-visible">
+        
+        <!-- Background Image & Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=2000&q=80" alt="Luxury Architecture Background" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-[#0f1722]/85 backdrop-blur-[2px]"></div>
+        </div>
+
+        <!-- Content Container -->
+        <div class="max-w-[1440px] mx-auto relative z-10 text-center max-w-3xl flex flex-col items-center">
+            
+            <!-- Oval Badge with Gold Dot -->
+            <div class="inline-flex items-center space-x-2 bg-black/40 border border-[#b8975a]/30 px-4 py-1.5 rounded-full mb-6 backdrop-blur-md shadow-inner">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#b8975a]"></span>
+                <span class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase">
+                    CONCIERGE &amp; PRIVATE BROKERAGE
+                </span>
+            </div>
+
+            <h2 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6 font-serif">
+                Let's Talk About Your Property
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-10 max-w-2xl mx-auto">
+                Have questions about buying, selling, renting, or investing? Our real estate experts are here to provide confidential, sovereign portfolio advisory.
+            </p>
+            
+            <!-- Square Action Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a href="./404.html" class="bg-[#b8975a] hover:bg-[#a6854f] text-white text-[10px] font-bold tracking-widest uppercase px-8 py-4 rounded-none shadow-md transition">
+                    DIRECT CONSULTATION
+                </a>
+                <a href="./404.html" class="bg-transparent hover:bg-white/10 text-white border border-white/30 text-[10px] font-bold tracking-widest uppercase px-8 py-4 rounded-none transition">
+                    OUR PRESENCE
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4 Overlapping Square Contact Cards Container -->
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 relative z-20 -mt-28 sm:-mt-32 lg:-mt-36">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <!-- Card 1: Visit Us -->
+            <div class="bg-white rounded-none p-8 shadow-2xl border border-slate-200 flex flex-col justify-between transition hover:-translate-y-1">
+                <div>
+                    <!-- Icon without Box -->
+                    <div class="mb-6">
+                        <img src="./abt24.webp" alt="Visit Us Icon" class="w-6 h-6 object-contain">
+                    </div>
+                    <p class="text-[9px] font-bold tracking-widest text-[#b8975a] uppercase mb-1">VISIT US</p>
+                    <h3 class="text-base font-extrabold text-slate-900 mb-3">Our Office Address</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                        742 Evergreen Promenade, Suite 400, Financial District
+                    </p>
+                </div>
+                <div>
+                    <hr class="border-slate-200 mb-4">
+                    <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-slate-900 hover:text-[#b8975a] transition">
+                        <span>Access Private Valet</span>
+                        <span class="ml-1 font-extrabold">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 2: Call Us -->
+            <div class="bg-white rounded-none p-8 shadow-2xl border border-slate-200 flex flex-col justify-between transition hover:-translate-y-1">
+                <div>
+                    <!-- Icon without Box -->
+                    <div class="mb-6">
+                        <img src="./abt25.webp" alt="Call Us Icon" class="w-6 h-6 object-contain">
+                    </div>
+                    <p class="text-[9px] font-bold tracking-widest text-[#b8975a] uppercase mb-1">CALL US</p>
+                    <h3 class="text-base font-extrabold text-slate-900 mb-3">+91 XXX XXX XXXX</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                        Direct Private Desk available 24/7 for sovereign clients and family offices.
+                    </p>
+                </div>
+                <div>
+                    <hr class="border-slate-200 mb-4">
+                    <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-slate-900 hover:text-[#b8975a] transition">
+                        <span>Request Encrypted Call</span>
+                        <span class="ml-1 font-extrabold">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 3: Email Us -->
+            <div class="bg-white rounded-none p-8 shadow-2xl border border-slate-200 flex flex-col justify-between transition hover:-translate-y-1">
+                <div>
+                    <!-- Icon without Box -->
+                    <div class="mb-6">
+                        <img src="./abt26.webp" alt="Email Us Icon" class="w-6 h-6 object-contain">
+                    </div>
+                    <p class="text-[9px] font-bold tracking-widest text-[#b8975a] uppercase mb-1">EMAIL US</p>
+                    <h3 class="text-base font-extrabold text-slate-900 mb-3">info@realestate.com</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                        Dedicated portfolio advisory, bespoke property curation, and acquisition briefs.
+                    </p>
+                </div>
+                <div>
+                    <hr class="border-slate-200 mb-4">
+                    <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-slate-900 hover:text-[#b8975a] transition">
+                        <span>Direct Transmission</span>
+                        <span class="ml-1 font-extrabold">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 4: Working Hours -->
+            <div class="bg-white rounded-none p-8 shadow-2xl border border-slate-200 flex flex-col justify-between transition hover:-translate-y-1">
+                <div>
+                    <!-- Icon without Box -->
+                    <div class="mb-6">
+                        <img src="./abt27.webp" alt="Working Hours Icon" class="w-6 h-6 object-contain">
+                    </div>
+                    <p class="text-[9px] font-bold tracking-widest text-[#b8975a] uppercase mb-1">WORKING HOURS</p>
+                    <h3 class="text-base font-extrabold text-slate-900 mb-3">Mon – Sat: 9:00 AM – 6:00 PM</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed mb-8">
+                        Private showings and discreet salon consultations available Sunday by appointment.
+                    </p>
+                </div>
+                <div>
+                    <hr class="border-slate-200 mb-4">
+                    <a href="./404.html" class="inline-flex items-center text-[10px] font-bold tracking-widest text-slate-900 hover:text-[#b8975a] transition">
+                        <span>Schedule Appointment</span>
+                        <span class="ml-1 font-extrabold">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+<!-- INITIATE A PRIVATE CONSULTATION SECTION -->
+<section class="w-full bg-[#fcfbf9] py-20 lg:py-32 px-4 sm:px-6 lg:px-12">
+    <div class="max-w-[1440px] mx-auto">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+            
+            <!-- Left Side: Conversation & Dossier Info -->
+            <div class="lg:col-span-5 space-y-8">
+                <div>
+                    <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-3">
+                        CONVERSATION &amp; DOSSIER
+                    </p>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight mb-4 font-serif">
+                        Initiate a Private Consultation
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                        Whether inquiring about prime waterfront residences, sovereign agricultural holdings, or bespoke acquisitions, our senior partners ensure utmost discretion and rigorous financial clarity.
+                    </p>
+                </div>
+
+                <!-- Feature 1 -->
+                <div class="flex space-x-4 border-l-2 border-[#b8975a] pl-4">
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1">Private Desk Direct</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Structured NDA executed on inquiry for confidential off-market estates.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="flex space-x-4 border-l-2 border-[#b8975a] pl-4">
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-1">Bespoke Architectural Appraisal</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Valuation frameworks aligned with historic provenance and prime market metrics.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Executive Card with Brown AE Box -->
+                <div class="bg-white rounded-none p-6 border border-slate-200 shadow-sm flex items-start space-x-4">
+                    <div class="w-12 h-12 bg-[#b8975a] text-white font-bold flex items-center justify-center shrink-0 text-xs tracking-widest uppercase">
+                        AE
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900">Lady Elizabeth Vance</h4>
+                        <p class="text-[10px] text-[#b8975a] font-bold tracking-wider uppercase mb-3">Managing Principal, Private Office</p>
+                        <p class="text-xs text-slate-500 italic font-serif leading-relaxed">
+                            &ldquo;We consider discretion our first luxury and architectural integrity our lasting signature.&rdquo;
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Send Us a Message Form with Inline Validation -->
+            <div class="lg:col-span-7">
+                <div class="bg-white rounded-none p-8 sm:p-12 border border-slate-200 shadow-sm">
+                    
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-extrabold text-slate-900 mb-2 font-serif">Send Us a Message</h3>
+                        <p class="text-xs text-slate-500">Fill in the details below and an associate director will connect within 2 business hours.</p>
+                    </div>
+
+                    <form id="consultationForm" onsubmit="handleFormSubmit(event)" class="space-y-6" novalidate>
+                        
+                        <!-- Select Service Tabs -->
+                        <div>
+                            <label class="block text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-3">SELECT SERVICE</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                <button type="button" onclick="setService(this)" class="service-btn bg-slate-900 text-white text-xs font-bold py-3 px-4 text-center transition border border-slate-900">Buy Estate</button>
+                                <button type="button" onclick="setService(this)" class="service-btn bg-white text-slate-700 text-xs font-bold py-3 px-4 text-center transition border border-slate-200 hover:border-slate-400">Sell / List</button>
+                                <button type="button" onclick="setService(this)" class="service-btn bg-white text-slate-700 text-xs font-bold py-3 px-4 text-center transition border border-slate-200 hover:border-slate-400">Prime Lease</button>
+                                <button type="button" onclick="setService(this)" class="service-btn bg-white text-slate-700 text-xs font-bold py-3 px-4 text-center transition border border-slate-200 hover:border-slate-400">Investment</button>
+                            </div>
+                        </div>
+
+                        <!-- Full Name & Phone Number Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Full Name</label>
+                                <input type="text" id="fullName" placeholder="Lord / Lady / Mr. / Ms. Alexander Wright" class="w-full bg-[#fcfbf9] border border-slate-200 px-4 py-3 text-xs text-slate-900 focus:outline-none focus:border-slate-400">
+                                <span id="nameError" class="text-[10px] text-red-500 mt-1 block h-4"></span>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Phone Number</label>
+                                <div class="flex">
+                                    <span class="bg-slate-100 border border-r-0 border-slate-200 px-3 py-3 text-xs text-slate-600 flex items-center">+91</span>
+                                    <input type="text" id="phoneNumber" maxlength="10" placeholder="XXX XXX XXXX" class="w-full bg-[#fcfbf9] border border-slate-200 px-4 py-3 text-xs text-slate-900 focus:outline-none focus:border-slate-400">
+                                </div>
+                                <span id="phoneError" class="text-[10px] text-red-500 mt-1 block h-4"></span>
+                            </div>
+                        </div>
+
+                        <!-- Email Address & Property Location Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Email Address</label>
+                                <input type="text" id="emailAddress" placeholder="alexander@gmail.com" class="w-full bg-[#fcfbf9] border border-slate-200 px-4 py-3 text-xs text-slate-900 focus:outline-none focus:border-slate-400">
+                                <span id="emailError" class="text-[10px] text-red-500 mt-1 block h-4"></span>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Property Location</label>
+                                <input type="text" id="propertyLocation" placeholder="e.g. Tribeca, Mayfair, Lake Como" class="w-full bg-[#fcfbf9] border border-slate-200 px-4 py-3 text-xs text-slate-900 focus:outline-none focus:border-slate-400">
+                                <span id="locationError" class="text-[10px] text-red-500 mt-1 block h-4"></span>
+                            </div>
+                        </div>
+
+                        <!-- Message Textarea -->
+                        <div>
+                            <label class="block text-[10px] font-bold tracking-widest text-slate-400 uppercase mb-2">Message &amp; Portfolio Specifications</label>
+                            <textarea id="messageText" rows="4" placeholder="Detail preferred architectural style, target capital allocation, specific privacy mandates, or timeline..." class="w-full bg-[#fcfbf9] border border-slate-200 p-4 text-xs text-slate-900 focus:outline-none focus:border-slate-400"></textarea>
+                            <span id="messageError" class="text-[10px] text-red-500 mt-1 block h-4"></span>
+                        </div>
+
+                        <!-- Checkbox & Submit Action -->
+                        <div>
+                            <div class="flex items-start space-x-3 pt-2">
+                                <input type="checkbox" id="ndaCheckbox" class="mt-0.5 h-4 w-4 rounded-none border-slate-300 text-slate-900 focus:ring-0 cursor-pointer">
+                                <label for="ndaCheckbox" class="text-xs text-slate-500 cursor-pointer select-none">
+                                    I request that all portfolio communication and subsequent asset dossiers remain under bilateral non-disclosure provisions.
+                                </label>
+                            </div>
+                            <span id="checkboxError" class="text-[10px] text-red-500 mt-1 block h-4"></span>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-slate-100 gap-4">
+                            <button type="submit" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold tracking-widest uppercase px-8 py-4 transition shadow-md">
+                                SEND MESSAGE &rarr;
+                            </button>
+                            <div class="flex items-center text-[10px] text-slate-400 tracking-wider">
+                                <span class="mr-1.5">&#128274;</span> Encrypted &amp; Confidential &bull; NDA Protected
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- Inline JavaScript Validation Script -->
+<script>
+    function setService(button) {
+        document.querySelectorAll('.service-btn').forEach(btn => {
+            btn.classList.remove('bg-slate-900', 'text-white', 'border-slate-900');
+            btn.classList.add('bg-white', 'text-slate-700', 'border-slate-200');
+        });
+        button.classList.remove('bg-white', 'text-slate-700', 'border-slate-200');
+        button.classList.add('bg-slate-900', 'text-white', 'border-slate-900');
+    }
+
+    function handleFormSubmit(event) {
+        event.preventDefault();
+
+        const fullName = document.getElementById('fullName').value.trim();
+        const phoneNumber = document.getElementById('phoneNumber').value.trim();
+        const emailAddress = document.getElementById('emailAddress').value.trim();
+        const propertyLocation = document.getElementById('propertyLocation').value.trim();
+        const messageText = document.getElementById('messageText').value.trim();
+        const ndaCheckbox = document.getElementById('ndaCheckbox').checked;
+
+        const nameRegex = /^[A-Za-z\s]+$/;
+        const phoneRegex = /^\d{10}$/;
+
+        let isValid = true;
+
+        // Full Name Validation
+        if (!fullName) {
+            document.getElementById('nameError').textContent = 'Full name is required.';
+            isValid = false;
+        } else if (!nameRegex.test(fullName)) {
+            document.getElementById('nameError').textContent = 'Only alphabets and spaces are allowed.';
+            isValid = false;
+        } else {
+            document.getElementById('nameError').textContent = '';
+        }
+
+        // Phone Number Validation
+        if (!phoneNumber) {
+            document.getElementById('phoneError').textContent = 'Phone number is required.';
+            isValid = false;
+        } else if (!phoneRegex.test(phoneNumber)) {
+            document.getElementById('phoneError').textContent = 'Phone number must be exactly 10 digits.';
+            isValid = false;
+        } else {
+            document.getElementById('phoneError').textContent = '';
+        }
+
+        // Email Validation
+        if (!emailAddress) {
+            document.getElementById('emailError').textContent = 'Email address is required.';
+            isValid = false;
+        } else if (!emailAddress.endsWith('@gmail.com')) {
+            document.getElementById('emailError').textContent = 'Email address must end at gmail.com.';
+            isValid = false;
+        } else {
+            document.getElementById('emailError').textContent = '';
+        }
+
+        // Property Location Validation
+        if (!propertyLocation) {
+            document.getElementById('locationError').textContent = 'Property location is required.';
+            isValid = false;
+        } else {
+            document.getElementById('locationError').textContent = '';
+        }
+
+        // Message Validation
+        if (!messageText) {
+            document.getElementById('messageError').textContent = 'Message is required.';
+            isValid = false;
+        } else {
+            document.getElementById('messageError').textContent = '';
+        }
+
+        // Checkbox Validation
+        if (!ndaCheckbox) {
+            document.getElementById('checkboxError').textContent = 'You must agree to the terms and NDA provisions.';
+            isValid = false;
+        } else {
+            document.getElementById('checkboxError').textContent = '';
+        }
+
+        // If everything is completely filled and valid, redirect to 404 page
+        if (isValid) {
+            window.location.href = '404.html';
+        }
+    }
+</script>
+<!-- FIND OUR OFFICE SECTION -->
+<section class="w-full relative py-20 lg:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden bg-[#f3f4f5]">
+
+    <div class="max-w-[1440px] mx-auto relative z-10">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-3">
+                GLOBAL DISPATCH
+            </p>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight mb-4 font-serif">
+                Find Our Office
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                Strategically located at the financial epicenter to provide seamless cross-border representation and discreet consultation.
+            </p>
+        </div>
+
+        <!-- Two Columns Layout (Left Card Wider / Right Card Smaller) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            
+            <!-- Left Card: Wider Headquarters Box (col-span-7) -->
+            <div class="lg:col-span-7 bg-[#121c2b] rounded-none p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden shadow-2xl border border-slate-800">
+                
+                <!-- Top Details with Gold Flagship Text -->
+                <div class="flex justify-between items-start z-10 mb-12">
+                    <span class="text-[10px] font-bold tracking-widest text-[#b8975a] uppercase">GLOBAL FLAGSHIP &bull; NEW YORK</span>
+                    <span class="text-[10px] font-mono text-slate-400">40.7128&deg; N, 74.0060&deg; W</span>
+                </div>
+
+                <!-- Center Brand & Custom Icon Image -->
+                <div class="text-center my-auto z-10 py-8">
+                    <div class="mb-4 flex justify-center">
+                        <img src="./abt28.webp" alt="Office Icon" class="w-12 h-12 object-contain">
+                    </div>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-white mb-2 font-serif">Aurelia Headquarters</h3>
+                    <p class="text-xs text-slate-300">742 Evergreen Promenade, Suite 400</p>
+                </div>
+
+                <!-- Bottom Bar with White Container & Redirect Button -->
+                <div class="bg-white rounded-none p-4 sm:p-6 flex flex-col sm:flex-row items-center justify-between z-10 gap-4 mt-8 shadow-md">
+                    <div>
+                        <h4 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-0.5">Financial District Reception</h4>
+                        <p class="text-[11px] text-slate-500">Private elevator access via North Promenade Concourse</p>
+                    </div>
+                    <a href="404.html" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold tracking-widest uppercase px-6 py-3.5 transition text-center shrink-0">
+                        GET DIRECTIONS &rarr;
+                    </a>
+                </div>
+
+                <!-- Subtle background schematic lines styling -->
+                <div class="absolute inset-0 opacity-10 pointer-events-none flex items-center justify-center">
+                    <div class="w-[500px] h-[500px] rounded-full border border-slate-500"></div>
+                </div>
+
+            </div>
+
+            <!-- Right Card: Smaller Advisory Salon Box (col-span-5) -->
+            <div class="lg:col-span-5 bg-slate-900 rounded-none overflow-hidden flex flex-col justify-between shadow-2xl border border-slate-800 relative group min-h-[480px]">
+                
+                <!-- Card Background Image -->
+                <div class="absolute inset-0 z-0">
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80" alt="Advisory Salon" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#0f1722] via-[#0f1722]/60 to-transparent"></div>
+                </div>
+
+                <!-- Spacer top element -->
+                <div></div>
+
+                <!-- Bottom Content with Badge above Title -->
+                <div class="relative z-10 p-8 sm:p-10 space-y-3">
+                    <span class="inline-block bg-black/40 border border-[#b8975a]/40 text-[#b8975a] text-[9px] font-bold tracking-widest uppercase px-3 py-1 backdrop-blur-md">
+                        EXECUTIVE BOARDROOM &amp; CLIENT LOUNGE
+                    </span>
+                    <h3 class="text-xl sm:text-2xl font-extrabold text-white font-serif">The Advisory Salon</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Where private monographs are reviewed and cross-continental portfolio transactions are brought to fruition.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- WHY PARTNER WITH AURELIA ESTATES SECTION -->
+<section class="w-full bg-[#fcfbf9] py-20 lg:py-32 px-4 sm:px-6 lg:px-12">
+    <div class="max-w-[1440px] mx-auto">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-3">
+                SOVEREIGN EXCELLENCE
+            </p>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight mb-4 font-serif">
+                Why Partner With Aurelia Estates
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                Our practice is structured around the unique needs of global asset holders, family offices, and architectural collectors.
+            </p>
+        </div>
+
+        <!-- 3 Cards Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+            
+            <!-- Card 1: Expert Guidance -->
+            <div class="bg-white rounded-none p-8 sm:p-10 border border-slate-200/80 shadow-sm flex flex-col justify-between relative overflow-hidden transition hover:-translate-y-1">
+                
+                <!-- Background Number Watermark -->
+                <div class="absolute top-6 right-6 text-6xl font-extrabold text-slate-100 font-serif select-none pointer-events-none">
+                    01
+                </div>
+
+                <div class="relative z-10">
+                    <!-- Icon Box Slot -->
+                    <div class="w-12 h-12 bg-[#f4f2ee] border border-[#e5dec9] rounded-none flex items-center justify-center mb-8 p-2.5">
+                        <img src="./abt29.webp" alt="Expert Guidance Icon" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 mb-3 font-serif">Expert Guidance</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Decades of prime architectural brokerage, rigorous capital valuation, and discreet representation across North America and Europe.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Card 2: Quick Response -->
+            <div class="bg-white rounded-none p-8 sm:p-10 border border-slate-200/80 shadow-sm flex flex-col justify-between relative overflow-hidden transition hover:-translate-y-1">
+                
+                <!-- Background Number Watermark -->
+                <div class="absolute top-6 right-6 text-6xl font-extrabold text-slate-100 font-serif select-none pointer-events-none">
+                    02
+                </div>
+
+                <div class="relative z-10">
+                    <!-- Icon Box Slot -->
+                    <div class="w-12 h-12 bg-[#f4f2ee] border border-[#e5dec9] rounded-none flex items-center justify-center mb-8 p-2.5">
+                        <img src="./abt30.webp" alt="Quick Response Icon" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 mb-3 font-serif">Quick Response</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Guaranteed response within 2 business hours with dedicated private client partners assigned to your portfolio requirements.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Card 3: Personalized Solutions -->
+            <div class="bg-white rounded-none p-8 sm:p-10 border border-slate-200/80 shadow-sm flex flex-col justify-between relative overflow-hidden transition hover:-translate-y-1">
+                
+                <!-- Background Number Watermark -->
+                <div class="absolute top-6 right-6 text-6xl font-extrabold text-slate-100 font-serif select-none pointer-events-none">
+                    03
+                </div>
+
+                <div class="relative z-10">
+                    <!-- Icon Box Slot -->
+                    <div class="w-12 h-12 bg-[#f4f2ee] border border-[#e5dec9] rounded-none flex items-center justify-center mb-8 p-2.5">
+                        <img src="./abt31.webp" alt="Personalized Solutions Icon" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 mb-3 font-serif">Personalized Solutions</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Bespoke property curation, confidential off-market portfolio access, and customized cross-border escrow structuring.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<!-- FREQUENTLY ASKED QUESTIONS SECTION -->
+<section class="w-full bg-[#fcfbf9] py-20 lg:py-32 px-4 sm:px-6 lg:px-12">
+    <div class="max-w-[1000px] mx-auto">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-3">
+                CLIENT INQUIRIES
+            </p>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight mb-4 font-serif">
+                Frequently Asked Questions
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                Clear insights into our sovereign brokerage standards, appraisal timelines, and off-market curation.
+            </p>
+        </div>
+
+        <!-- FAQ Accordion List -->
+        <div class="space-y-4">
+            
+            <!-- FAQ Item 1 (Open by default) -->
+            <div class="bg-white border border-slate-200/80 shadow-sm transition-all">
+                <button type="button" onclick="toggleFaq(this)" class="w-full px-6 py-6 text-left flex items-center justify-between focus:outline-none">
+                    <span class="text-sm sm:text-base font-bold text-slate-900 font-serif">How can I list my property for sale?</span>
+                    <span class="faq-icon text-slate-400 font-bold text-lg transition-transform duration-300 rotate-180">&#708;</span>
+                </button>
+                <div class="faq-content px-6 pb-6 text-xs sm:text-sm text-slate-500 leading-relaxed border-t border-slate-100 pt-4 block">
+                    To list an estate with Aurelia International Realty, initiate a contact through our Private Desk above or submit an inquiry directly to Lady Elizabeth Vance. We conduct a preliminary title provenance check and architectural appraisal before deploying tailored cinematic monographs and discreet off-market placement.
+                </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="bg-white border border-slate-200/80 shadow-sm transition-all">
+                <button type="button" onclick="toggleFaq(this)" class="w-full px-6 py-6 text-left flex items-center justify-between focus:outline-none">
+                    <span class="text-sm sm:text-base font-bold text-slate-900 font-serif">Can you help me find a property?</span>
+                    <span class="faq-icon text-slate-400 font-bold text-lg transition-transform duration-300">&#708;</span>
+                </button>
+                <div class="faq-content px-6 pb-6 text-xs sm:text-sm text-slate-500 leading-relaxed border-t border-slate-100 pt-4 hidden">
+                    Yes. Our private advisory team curates primary residences, historical country estates, and high-yield international investment portfolios tailored precisely to your acquisition mandate and privacy specifications.
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="bg-white border border-slate-200/80 shadow-sm transition-all">
+                <button type="button" onclick="toggleFaq(this)" class="w-full px-6 py-6 text-left flex items-center justify-between focus:outline-none">
+                    <span class="text-sm sm:text-base font-bold text-slate-900 font-serif">Do you provide property valuation?</span>
+                    <span class="faq-icon text-slate-400 font-bold text-lg transition-transform duration-300">&#708;</span>
+                </button>
+                <div class="faq-content px-6 pb-6 text-xs sm:text-sm text-slate-500 leading-relaxed border-t border-slate-100 pt-4 hidden">
+                    We offer bespoke architectural appraisals and market valuation frameworks aligned with historical provenance, structural uniqueness, and current cross-border capital flows.
+                </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="bg-white border border-slate-200/80 shadow-sm transition-all">
+                <button type="button" onclick="toggleFaq(this)" class="w-full px-6 py-6 text-left flex items-center justify-between focus:outline-none">
+                    <span class="text-sm sm:text-base font-bold text-slate-900 font-serif">Can I schedule a property visit?</span>
+                    <span class="faq-icon text-slate-400 font-bold text-lg transition-transform duration-300">&#708;</span>
+                </button>
+                <div class="faq-content px-6 pb-6 text-xs sm:text-sm text-slate-500 leading-relaxed border-t border-slate-100 pt-4 hidden">
+                    Private viewings and salon consultations are arranged strictly by appointment, complete with secure access arrangements, private valet service, and prior NDA execution when required.
+                </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="bg-white border border-slate-200/80 shadow-sm transition-all">
+                <button type="button" onclick="toggleFaq(this)" class="w-full px-6 py-6 text-left flex items-center justify-between focus:outline-none">
+                    <span class="text-sm sm:text-base font-bold text-slate-900 font-serif">What areas do you cover?</span>
+                    <span class="faq-icon text-slate-400 font-bold text-lg transition-transform duration-300">&#708;</span>
+                </button>
+                <div class="faq-content px-6 pb-6 text-xs sm:text-sm text-slate-500 leading-relaxed border-t border-slate-100 pt-4 hidden">
+                    Our operations span primary financial epicenters, metropolitan flagships, and prime resort districts across North America and Europe, supported by our global network of family office partners.
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- FAQ Accordion Script -->
+<script>
+    function toggleFaq(button) {
+        const content = button.nextElementSibling;
+        const icon = button.querySelector('.faq-icon');
+        const isOpen = !content.classList.contains('hidden');
+
+        // Close all other FAQs
+        document.querySelectorAll('.faq-content').forEach(item => {
+            item.classList.add('hidden');
+        });
+        document.querySelectorAll('.faq-icon').forEach(item => {
+            item.classList.remove('rotate-180');
+        });
+
+        // Toggle clicked FAQ
+        if (isOpen) {
+            content.classList.add('hidden');
+            icon.classList.remove('rotate-180');
+        } else {
+            content.classList.remove('hidden');
+            icon.classList.add('rotate-180');
+        }
+    }
+</script>
+<!-- YOUR ACQUISITION ROADMAP CALL TO ACTION SECTION -->
+<section class="w-full bg-[#fcfbf9] py-16">
+    <div class="w-full">
+        
+        <!-- Deep Blue Banner Box (Full-Width Bleed) -->
+        <div class="w-full bg-[#3b5998] bg-gradient-to-br from-[#2f4a7d] to-[#3b5998] py-20 sm:py-28 px-6 sm:px-12 text-center rounded-none shadow-xl relative overflow-hidden flex flex-col items-center justify-center">
+            
+            <!-- Subtitle -->
+            <p class="text-[10px] sm:text-[11px] font-bold tracking-widest text-[#b8975a] uppercase mb-4">
+                YOUR ACQUISITION ROADMAP
+            </p>
+
+            <!-- Main Heading -->
+            <h2 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-4 font-serif">
+                Your Next Property Journey Starts Here.
+            </h2>
+
+            <!-- Description -->
+            <p class="text-xs sm:text-sm text-slate-200 leading-relaxed mb-10 max-w-lg mx-auto">
+                Connect with our team today and take the next step with confidence.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a href="./404.html" class="bg-[#b8975a] hover:bg-[#a6854f] text-white text-[10px] font-bold tracking-widest uppercase px-8 py-4 rounded-none shadow-md transition">
+                    CONTACT US
+                </a>
+                <a href="./404.html" class="bg-transparent hover:bg-white/10 text-white border border-white/40 text-[10px] font-bold tracking-widest uppercase px-8 py-4 rounded-none transition">
+                    VIEW PROPERTIES
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+<footer class="footer-section" style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #0b0f19; color: #94a3b8; width: 100%; box-sizing: border-box; margin: 24px 0 0 0; padding: 64px 48px;">
+  <div style="width: 100%; max-width: 1344px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr; gap: 40px; align-items: start;" class="footer-grid">
+    
+    <!-- Column 1: Home icon image first, Custom logo second + Bio -->
+    <div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px; min-height: 46px;">
+        <!-- White Rounded Box with Home Icon Image (First) - Made Slightly Larger -->
+        <a href="./index.html" aria-label="Home" style="width: 46px; height: 46px; border-radius: 14px; background-color: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none; box-sizing: border-box; flex-shrink: 0;">
+          <img src="./footericon.webp" alt="Home Icon" style="width: 24px; height: 24px; object-fit: contain; display: block;" />
+        </a>
+
+        <!-- Replace src with your logo image path (Second) -->
+        <a href="./index.html" style="display: inline-block;">
+          <img src="./footer logo.webp" alt="Company Logo" style="height: 32px; width: auto; object-fit: contain; display: block;" />
+        </a>
+      </div>
+      <p style="font-size: 14px; color: #94a3b8; line-height: 1.6; margin: 0 0 24px 0; max-width: 280px;">
+        Your trusted partner in real estate. We help you find the perfect property for a better tomorrow.
+      </p>
+      
+     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <!-- Facebook -->
+        <a href="404.html" aria-label="Facebook" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#1877F2'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+        <!-- Twitter / X -->
+        <a href="404.html" aria-label="Twitter" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#000000'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <!-- Instagram -->
+        <a href="404.html" aria-label="Instagram" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#E4405F'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+        </a>
+        <!-- LinkedIn -->
+        <a href="404.html" aria-label="LinkedIn" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#0A66C2'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <!-- YouTube -->
+        <a href="404.html" aria-label="YouTube" style="width: 36px; height: 36px; border-radius: 999px; background-color: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: #cbd5e1; text-decoration: none; transition: background-color 0.2s, color 0.2s;" onmouseover="this.style.backgroundColor='#FF0000'; this.style.color='#fff';" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.color='#cbd5e1';">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Column 2: Quick Links -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Quick Links</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="./index.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Home</a></li>
+        <li><a href="./about.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">About Us</a></li>
+        <li><a href="./contact.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Contact</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Privacy Policy</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Terms &amp; Conditions</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 3: Properties -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Properties</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Buy Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Rent Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Sell Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Featured Properties</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">All Properties</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 4: Company -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 20px 0;">Company</h3>
+      <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; font-size: 14px;">
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Our Team</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Careers</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Blog</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">FAQs</a></li>
+        <li><a href="404.html" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'">Testimonials</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 5: Newsletter -->
+    <div>
+      <h3 style="font-size: 13px; font-weight: 700; color: #ffffff; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 12px 0;">Newsletter</h3>
+      <p style="font-size: 13.5px; color: #94a3b8; line-height: 1.5; margin: 0 0 16px 0;">
+        Subscribe to get the latest property updates.
+      </p>
+      
+      <form id="stackly-newsletter-form" onsubmit="handleNewsletterSubmit(event)" style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <input 
+          type="email" 
+          id="newsletter-email" 
+          placeholder="Enter your email" 
+          style="flex: 1; min-width: 140px; background-color: #ffffff; color: #0f172a; border: none; border-radius: 8px; padding: 10px 14px; font-size: 13.5px; outline: none; box-sizing: border-box;"
+        />
+        <button 
+          type="submit" 
+          aria-label="Subscribe"
+          style="background-color: #2563eb; color: #ffffff; border: none; border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.2s, transform 0.1s; flex-shrink: 0;"
+          onmouseover="this.style.backgroundColor='#1d4ed8'"
+          onmouseout="this.style.backgroundColor='#2563eb'"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+      <div id="newsletter-error" style="color: #ef4444; font-size: 12px; margin-top: 6px; display: none;">Please enter the email first</div>
+    </div>
+
+  </div>
+
+  <style>
+    @media (max-width: 1024px) {
+      .footer-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+    @media (max-width: 640px) {
+      .footer-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .footer-section {
+        padding: 48px 20px !important;
+      }
+    }
+  </style>
+
+  <script>
+    function handleNewsletterSubmit(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('newsletter-email');
+      const errorMsg = document.getElementById('newsletter-error');
+      const emailVal = emailInput.value.trim();
+
+      if (!emailVal || !emailVal.includes('@')) {
+        errorMsg.style.display = 'block';
+        emailInput.style.border = '1px solid #ef4444';
+        return;
+      }
+      
+      errorMsg.style.display = 'none';
+      emailInput.style.border = 'none';
+      window.location.href = '404.html';
+    }
+  </script>
+</footer>
+
+
+<script>
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        const openIcon = document.getElementById('menu-icon-open');
+        const closeIcon = document.getElementById('menu-icon-close');
+        
+        if (!menu || !openIcon || !closeIcon) return;
+
+        const isHidden = menu.classList.contains('hidden');
+
+        if (isHidden) {
+            menu.classList.remove('hidden');
+            menu.classList.add('flex');
+            openIcon.classList.add('hidden');
+            closeIcon.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } else {
+            menu.classList.add('hidden');
+            menu.classList.remove('flex');
+            openIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+</script>
+
+</body>
+</html>
